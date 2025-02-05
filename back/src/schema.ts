@@ -3,7 +3,7 @@ import ggl from "graphql-tag";
 export const typeDefs = ggl`
     type Mutation {
         createUser(username: String!, password: String!): CreateUserResponse
-        signIn(username: String!, password: String!): SignInResponse
+        logIn(username: String!, password: String!): LogInResponse
         addArticle(title: String!, content: String!): AddArticleResponse
         deleteArticle(id: ID!): DeleteArticleResponse
         updateArticle(id: ID!, data: UpdateArticleProps!): UpdateArticleResponse
@@ -65,7 +65,7 @@ export const typeDefs = ggl`
         user: User
     }
 
-    type SignInResponse {
+    type LogInResponse {
         code: Int!
         success: Boolean!
         message: String!

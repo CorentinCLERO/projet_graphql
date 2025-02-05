@@ -31,7 +31,7 @@ export const resolvers: Resolvers = {
         };
       }
     },
-    signIn: async (_, { username, password }, context) => {
+    logIn: async (_, { username, password }, context) => {
       const user = await context.dataSources.db.user.findUnique({
         where: { username },
       });

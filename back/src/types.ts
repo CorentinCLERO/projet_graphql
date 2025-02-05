@@ -98,6 +98,15 @@ export type GetArticlesResponse = {
   success: Scalars['Boolean']['output'];
 };
 
+export type LogInResponse = {
+  __typename?: 'LogInResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+  token?: Maybe<Scalars['String']['output']>;
+  user?: Maybe<User>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addArticle?: Maybe<AddArticleResponse>;
@@ -105,7 +114,7 @@ export type Mutation = {
   createUser?: Maybe<CreateUserResponse>;
   deleteArticle?: Maybe<DeleteArticleResponse>;
   deleteComment?: Maybe<DeleteCommentResponse>;
-  signIn?: Maybe<SignInResponse>;
+  logIn?: Maybe<LogInResponse>;
   updateArticle?: Maybe<UpdateArticleResponse>;
 };
 
@@ -138,7 +147,7 @@ export type MutationDeleteCommentArgs = {
 };
 
 
-export type MutationSignInArgs = {
+export type MutationLogInArgs = {
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
 };
@@ -159,15 +168,6 @@ export type Query = {
 
 export type QueryGetArticleArgs = {
   id: Scalars['ID']['input'];
-};
-
-export type SignInResponse = {
-  __typename?: 'SignInResponse';
-  code: Scalars['Int']['output'];
-  message: Scalars['String']['output'];
-  success: Scalars['Boolean']['output'];
-  token?: Maybe<Scalars['String']['output']>;
-  user?: Maybe<User>;
 };
 
 export type UpdateArticleProps = {
@@ -281,9 +281,9 @@ export type ResolversTypes = {
   GetArticlesResponse: ResolverTypeWrapper<GetArticlesResponse>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  LogInResponse: ResolverTypeWrapper<LogInResponse>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
-  SignInResponse: ResolverTypeWrapper<SignInResponse>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   UpdateArticleProps: UpdateArticleProps;
   UpdateArticleResponse: ResolverTypeWrapper<UpdateArticleResponse>;
@@ -306,9 +306,9 @@ export type ResolversParentTypes = {
   GetArticlesResponse: GetArticlesResponse;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
+  LogInResponse: LogInResponse;
   Mutation: {};
   Query: {};
-  SignInResponse: SignInResponse;
   String: Scalars['String']['output'];
   UpdateArticleProps: UpdateArticleProps;
   UpdateArticleResponse: UpdateArticleResponse;
@@ -397,13 +397,22 @@ export type GetArticlesResponseResolvers<ContextType = DataSourceContext, Parent
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type LogInResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['LogInResponse'] = ResolversParentTypes['LogInResponse']> = {
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MutationResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addArticle?: Resolver<Maybe<ResolversTypes['AddArticleResponse']>, ParentType, ContextType, RequireFields<MutationAddArticleArgs, 'content' | 'title'>>;
   addComment?: Resolver<Maybe<ResolversTypes['AddCommentResponse']>, ParentType, ContextType, RequireFields<MutationAddCommentArgs, 'articleId' | 'content'>>;
   createUser?: Resolver<Maybe<ResolversTypes['CreateUserResponse']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'password' | 'username'>>;
   deleteArticle?: Resolver<Maybe<ResolversTypes['DeleteArticleResponse']>, ParentType, ContextType, RequireFields<MutationDeleteArticleArgs, 'id'>>;
   deleteComment?: Resolver<Maybe<ResolversTypes['DeleteCommentResponse']>, ParentType, ContextType, RequireFields<MutationDeleteCommentArgs, 'id'>>;
-  signIn?: Resolver<Maybe<ResolversTypes['SignInResponse']>, ParentType, ContextType, RequireFields<MutationSignInArgs, 'password' | 'username'>>;
+  logIn?: Resolver<Maybe<ResolversTypes['LogInResponse']>, ParentType, ContextType, RequireFields<MutationLogInArgs, 'password' | 'username'>>;
   updateArticle?: Resolver<Maybe<ResolversTypes['UpdateArticleResponse']>, ParentType, ContextType, RequireFields<MutationUpdateArticleArgs, 'data' | 'id'>>;
 };
 
@@ -411,15 +420,6 @@ export type QueryResolvers<ContextType = DataSourceContext, ParentType extends R
   getArticle?: Resolver<Maybe<ResolversTypes['GetArticleResponse']>, ParentType, ContextType, RequireFields<QueryGetArticleArgs, 'id'>>;
   getArticles?: Resolver<Maybe<ResolversTypes['GetArticlesResponse']>, ParentType, ContextType>;
   me?: Resolver<Maybe<ResolversTypes['getUserResponse']>, ParentType, ContextType>;
-};
-
-export type SignInResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['SignInResponse'] = ResolversParentTypes['SignInResponse']> = {
-  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UpdateArticleResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['UpdateArticleResponse'] = ResolversParentTypes['UpdateArticleResponse']> = {
@@ -455,9 +455,9 @@ export type Resolvers<ContextType = DataSourceContext> = {
   DeleteCommentResponse?: DeleteCommentResponseResolvers<ContextType>;
   GetArticleResponse?: GetArticleResponseResolvers<ContextType>;
   GetArticlesResponse?: GetArticlesResponseResolvers<ContextType>;
+  LogInResponse?: LogInResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  SignInResponse?: SignInResponseResolvers<ContextType>;
   UpdateArticleResponse?: UpdateArticleResponseResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   getUserResponse?: GetUserResponseResolvers<ContextType>;
