@@ -5,10 +5,14 @@ export const typeDefs = ggl`
         createUser(username: String!, password: String!): CreateUserResponse
         signIn(username: String!, password: String!): SignInResponse
         addArticle(title: String!, content: String!): AddArticleResponse
+        deleteArticle(id: ID!): DeleteArticleResponse
+        updateArticle(id: ID!, data: UpdateArticleProps!): UpdateArticleResponse
     }
 
     type Query {
         me: getUserResponse
+        getArticle(id: ID!): GetArticleResponse
+        getArticles: GetArticlesResponse
     }
 
     type User {
@@ -22,6 +26,12 @@ export const typeDefs = ggl`
         content: String!
         author: User!
         createdAt: String!
+        updatedAt: String
+    }
+
+    input UpdateArticleProps {
+        title: String
+        content: String
     }
 
     type getUserResponse {
@@ -47,6 +57,33 @@ export const typeDefs = ggl`
     }
 
     type AddArticleResponse {
+        code: Int!
+        success: Boolean!
+        message: String!
+        article: Article
+    }
+
+    type GetArticleResponse {
+        code: Int!
+        success: Boolean!
+        message: String!
+        article: Article
+    }
+
+    type GetArticlesResponse {
+        code: Int!
+        success: Boolean!
+        message: String!
+        articles: [Article]
+    }
+    
+    type DeleteArticleResponse {
+        code: Int!
+        success: Boolean!
+        message: String!
+    }
+    
+    type UpdateArticleResponse {
         code: Int!
         success: Boolean!
         message: String!

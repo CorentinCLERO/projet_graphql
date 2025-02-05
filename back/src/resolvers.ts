@@ -1,4 +1,3 @@
-import { log } from "console";
 import { comparePasswords, createJWT, hashPassword } from "./modules/auth.js";
 import { Resolvers } from "./types.js";
 
@@ -67,9 +66,7 @@ export const resolvers: Resolvers = {
       };
     },
     addArticle: async (_, { title, content }, context) => {
-      console.log(context);
 
-      // Vérification que l'utilisateur est connecté
       if (!context.user) {
         return {
           code: 401,
@@ -80,7 +77,6 @@ export const resolvers: Resolvers = {
       }
 
       try {
-        // Création de l'article
         const newArticle = await context.dataSources.db.article.create({
           data: {
             title,
@@ -117,6 +113,95 @@ export const resolvers: Resolvers = {
         };
       }
     },
+    deleteArticle: async(_, { id }, context) => {
+      if (!context.user) {
+        return {
+          code: 401,
+          message: "Unauthorized",
+          success: false,
+        };
+      }
+      try {
+        const article = await context.dataSources.db.article.findFirstOrThrow({where: {id}, include: { author: true }})
+        if (article.authorId !== context.user.id) {
+          return {
+            code: 403,
+            message: "Forbidden",
+            success: false
+          }
+        }
+        await context.dataSources.db.article.delete({where: {id}})
+        return {
+          code: 200,
+          message: "Article deleted",
+          success: true
+        }
+      } catch (e) {
+        console.error(e);
+        return {
+          code: 400,
+          message: "Failed to delete article",
+          success: false,
+        };
+      }
+    },
+    updateArticle: async (_, { id, data }, context) => {
+      try {
+        if (!context.user) {
+          return {
+            code: 401,
+            message: "Unauthorized",
+            success: false
+          };
+        }
+    
+        const article = await context.dataSources.db.article.findUnique({ where: { id }, include: {author: true} });
+    
+        if (!article) {
+          return {
+            code: 404,
+            message: "Article not found",
+            success: false
+          };
+        }
+    
+        if (article.authorId !== context.user.id) {
+          return {
+            code: 403,
+            message: "Forbidden",
+            success: false
+          };
+        }
+    
+        const updatedArticle = await context.dataSources.db.article.update({
+          where: { id },
+          data: {
+            title: data.title ?? article.title,
+            content: data.content ?? article.content
+            
+          },
+          include: { author: true }
+        });
+    
+        return {
+          code: 200,
+          message: "Article updated",
+          success: true,
+          article: {
+            ...updatedArticle,
+            createdAt: updatedArticle.createdAt.toISOString(),
+            updatedAt: new Date().toISOString()
+          }
+        };
+      } catch (e) {
+        console.error(e);
+        return {
+          code: 400,
+          message: "Failed to update article",
+          success: false
+        };
+      }
+    },
   },
   Query: {
     me: async (_, __, context) => {
@@ -149,5 +234,85 @@ export const resolvers: Resolvers = {
         },
       };
     },
+    getArticle: async(_, { id }, context) => {
+      if (!context.user) {
+        return {
+          code: 401,
+          message: "Unauthorized",
+          success: false,
+          article: null,
+        };
+      }
+      try {
+        const article = await context.dataSources.db.article.findFirstOrThrow({ where: {id}, include: {author: true}})
+        if (!article) {
+          return {
+            code: 404,
+            message: "Article not found",
+            success: false,
+            article: null,
+          };
+        }
+        return {
+          code: 200,
+          message: "Article found",
+          success: true,
+          article: {
+            ...article,
+            createdAt: article.createdAt.toISOString(),
+            updatedAt: article.updatedAt.toISOString(),
+          }
+        }
+      } catch (e) {
+        console.error(e);
+        return {
+          code: 400,
+          message: "Failed to get article",
+          success: false,
+          article: null,
+        };
+      }
+    },
+    getArticles: async(_, __, context) => {
+      if (!context.user) {
+        return {
+          code: 401,
+          message: "Unauthorized",
+          success: false,
+          article: null,
+        };
+      }
+      try {
+        const articles = await context.dataSources.db.article.findMany({ include: {author: true}});
+        if (!articles) {
+          return {
+            code: 404,
+            message: "Articles not found",
+            success: false,
+            article: null,
+          };
+        }
+        return {
+          code: 200,
+          message: "Articles found",
+          success: true,
+          articles: articles.map(article => {
+            return {
+              ...article,
+              createdAt: article.createdAt.toISOString(),
+              updatedAt: article.updatedAt.toISOString(),
+            }
+          })
+          }
+      } catch (e) {
+        console.error(e);
+        return {
+          code: 400,
+          message: "Failed to get articles",
+          success: false,
+          article: null,
+        };
+      }
+    }
   },
 };
