@@ -1,13 +1,25 @@
 import { createContext, useContext } from "react"
 
+interface User {
+  id: number
+  username: string
+  token: string
+}
+
 type UserContentType = {
-  copy: string
-  setCopy:(c: string) => void
+  user: User
+  setUser:(c: User) => void
+  loading: boolean
 }
 
 export const UserContext = createContext<UserContentType>({
-  copy: 'Hello World',
-  setCopy: () => {},
+  user: {
+    id: 0,
+    username: '',
+    token: ''
+  },
+  setUser: () => {},
+  loading: true,
 })
 
 export const useUserContext = () => useContext(UserContext)
