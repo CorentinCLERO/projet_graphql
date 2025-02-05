@@ -1,0 +1,17 @@
+services:
+  graph-ql-backend:
+    container_name: graph-ql-backend
+    env_file: ./back/.env
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    ports: 
+      - '4000:4000'
+  graph-ql-frontend:
+      container_name: graph-ql-frontend
+      # env_file: ./front/.env
+      build:
+        context: ./front
+        dockerfile: Dockerfile
+      ports: 
+        - '5173:5173'
