@@ -6,7 +6,8 @@
     "compile": "tsc",
     "start": "npm run compile && node ./dist/index.js",
     "dev": "node --import ./scripts/register.js --watch src/index.ts",
-    "generate": "graphql-codegen"
+    "generate": "graphql-codegen",
+    "prisma":"prisma"
   },
   "keywords": [],
   "author": "",
