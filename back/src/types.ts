@@ -17,6 +17,23 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type AddArticleResponse = {
+  __typename?: 'AddArticleResponse';
+  article?: Maybe<Article>;
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
+export type Article = {
+  __typename?: 'Article';
+  author: User;
+  content: Scalars['String']['output'];
+  createdAt: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  title: Scalars['String']['output'];
+};
+
 export type CreateUserResponse = {
   __typename?: 'CreateUserResponse';
   code: Scalars['Int']['output'];
@@ -27,8 +44,15 @@ export type CreateUserResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addArticle?: Maybe<AddArticleResponse>;
   createUser?: Maybe<CreateUserResponse>;
   signIn?: Maybe<SignInResponse>;
+};
+
+
+export type MutationAddArticleArgs = {
+  content: Scalars['String']['input'];
+  title: Scalars['String']['input'];
 };
 
 
@@ -142,6 +166,8 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  AddArticleResponse: ResolverTypeWrapper<AddArticleResponse>;
+  Article: ResolverTypeWrapper<Article>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CreateUserResponse: ResolverTypeWrapper<CreateUserResponse>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
@@ -156,6 +182,8 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  AddArticleResponse: AddArticleResponse;
+  Article: Article;
   Boolean: Scalars['Boolean']['output'];
   CreateUserResponse: CreateUserResponse;
   ID: Scalars['ID']['output'];
@@ -168,6 +196,23 @@ export type ResolversParentTypes = {
   getUserResponse: GetUserResponse;
 };
 
+export type AddArticleResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['AddArticleResponse'] = ResolversParentTypes['AddArticleResponse']> = {
+  article?: Resolver<Maybe<ResolversTypes['Article']>, ParentType, ContextType>;
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ArticleResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Article'] = ResolversParentTypes['Article']> = {
+  author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type CreateUserResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['CreateUserResponse'] = ResolversParentTypes['CreateUserResponse']> = {
   code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -177,6 +222,7 @@ export type CreateUserResponseResolvers<ContextType = DataSourceContext, ParentT
 };
 
 export type MutationResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  addArticle?: Resolver<Maybe<ResolversTypes['AddArticleResponse']>, ParentType, ContextType, RequireFields<MutationAddArticleArgs, 'content' | 'title'>>;
   createUser?: Resolver<Maybe<ResolversTypes['CreateUserResponse']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'password' | 'username'>>;
   signIn?: Resolver<Maybe<ResolversTypes['SignInResponse']>, ParentType, ContextType, RequireFields<MutationSignInArgs, 'password' | 'username'>>;
 };
@@ -209,6 +255,8 @@ export type GetUserResponseResolvers<ContextType = DataSourceContext, ParentType
 };
 
 export type Resolvers<ContextType = DataSourceContext> = {
+  AddArticleResponse?: AddArticleResponseResolvers<ContextType>;
+  Article?: ArticleResolvers<ContextType>;
   CreateUserResponse?: CreateUserResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

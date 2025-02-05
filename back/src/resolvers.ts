@@ -1,3 +1,4 @@
+import { log } from "console";
 import { comparePasswords, createJWT, hashPassword } from "./modules/auth.js";
 import { Resolvers } from "./types.js";
 
@@ -64,6 +65,57 @@ export const resolvers: Resolvers = {
           username: user.username,
         },
       };
+    },
+    addArticle: async (_, { title, content }, context) => {
+      console.log(context);
+
+      // Vérification que l'utilisateur est connecté
+      if (!context.user) {
+        return {
+          code: 401,
+          message: "Unauthorized",
+          success: false,
+          article: null,
+        };
+      }
+
+      try {
+        // Création de l'article
+        const newArticle = await context.dataSources.db.article.create({
+          data: {
+            title,
+            content,
+            authorId: context.user.id,
+          },
+          include: {
+            author: true,
+          },
+        });
+
+        return {
+          code: 201,
+          message: "Article successfully created",
+          success: true,
+          article: {
+            id: newArticle.id,
+            title: newArticle.title,
+            content: newArticle.content,
+            author: {
+              id: newArticle.author.id,
+              username: newArticle.author.username,
+            },
+            createdAt: newArticle.createdAt.toISOString(),
+          },
+        };
+      } catch (e) {
+        console.error(e);
+        return {
+          code: 400,
+          message: "Failed to create article",
+          success: false,
+          article: null,
+        };
+      }
     },
   },
   Query: {
