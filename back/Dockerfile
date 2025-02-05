@@ -1,15 +1,9 @@
-FROM node:23-bullseye AS builder
+FROM node:23-bullseye
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
-
-RUN npm i
-
 COPY . .
 
-FROM builder AS development
-
-RUN npx prisma generate
+RUN npm i
 
 CMD ["npm", "run", "dev"]
