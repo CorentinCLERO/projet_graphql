@@ -69,7 +69,6 @@ export const resolvers: Resolvers = {
     addArticle: async (_, { title, content }, context) => {
       console.log(context);
 
-      // Vérification que l'utilisateur est connecté
       if (!context.user) {
         return {
           code: 401,
@@ -80,7 +79,6 @@ export const resolvers: Resolvers = {
       }
 
       try {
-        // Création de l'article
         const newArticle = await context.dataSources.db.article.create({
           data: {
             title,
@@ -104,6 +102,7 @@ export const resolvers: Resolvers = {
               id: newArticle.author.id,
               username: newArticle.author.username,
             },
+            likesCount: 0,
             createdAt: newArticle.createdAt.toISOString(),
           },
         };
@@ -117,6 +116,136 @@ export const resolvers: Resolvers = {
         };
       }
     },
+    likeArticle: async (_, { articleId }, context) => {
+      if (!context.user) {
+        return {
+          code: 401,
+          message: "Unauthorized",
+          success: false,
+          article: null,
+        };
+      }
+
+      try {
+        const article = await context.dataSources.db.article.findUnique({
+          where: { id: articleId },
+          include: { author: true },
+        });
+
+        if (!article) {
+          return {
+            code: 404,
+            message: "Article not found",
+            success: false,
+            article: null,
+          };
+        }
+
+        const existingLike = await context.dataSources.db.like.findUnique({
+          where: {
+            userId_articleId: {
+              userId: context.user.id,
+              articleId: articleId,
+            },
+          },
+        });
+
+        if (existingLike) {
+          return {
+            code: 400,
+            message: "You have already liked this article",
+            success: false,
+            article: null,
+          };
+        }
+
+
+        await context.dataSources.db.like.create({
+          data: {
+            userId: context.user.id,
+            articleId: articleId,
+          },
+        });
+
+
+        const likesCount = await context.dataSources.db.like.count({
+          where: { articleId: articleId },
+        });
+
+        return {
+          code: 200,
+          message: "Article liked successfully",
+          success: true,
+          article: {
+            id: article.id,
+            title: article.title,
+            content: article.content,
+            author: {
+              id: article.author.id,
+              username: article.author.username,
+            },
+            likesCount,
+            createdAt: article.createdAt.toISOString(),
+          },
+        };
+      } catch (e) {
+        console.error(e);
+        return {
+          code: 500,
+          message: "Failed to like the article",
+          success: false,
+          article: null,
+        };
+      }
+    },
+    deleteLike: async (_, { articleId }, context) => {
+      if (!context.user) {
+        return {
+          code: 401,
+          message: "Unauthorized",
+          success: false,
+        };
+      }
+    
+      try {
+        const existingLike = await context.dataSources.db.like.findUnique({
+          where: {
+            userId_articleId: {
+              userId: context.user.id,
+              articleId: articleId,
+            },
+          },
+        });
+    
+        if (!existingLike) {
+          return {
+            code: 404,
+            message: "Like not found",
+            success: false,
+          };
+        }
+    
+        await context.dataSources.db.like.delete({
+          where: {
+            id: existingLike.id,
+          },
+        });
+    
+        return {
+          code: 200,
+          message: "Like deleted successfully",
+          success: true,
+        };
+      } catch (error) {
+        console.error(error);
+        return {
+          code: 500,
+          message: "Failed to delete like",
+          success: false,
+        };
+      }
+    },
+    
   },
   Query: {
     me: async (_, __, context) => {
@@ -148,6 +277,26 @@ export const resolvers: Resolvers = {
           username: user.username,
         },
       };
+    },
+    getArticles: async (_, __, context) => {
+      const articles = await context.dataSources.db.article.findMany({
+        include: {
+          author: true,
+          likes: true,
+        },
+      });
+
+      return articles.map((article) => ({
+        id: article.id,
+        title: article.title,
+        content: article.content,
+        author: {
+          id: article.author.id,
+          username: article.author.username,
+        },
+        likesCount: article.likes.length,
+        createdAt: article.createdAt.toISOString(),
+      }));
     },
   },
 };

@@ -1,15 +1,17 @@
-import { BrowserRouter, Route, Routes } from 'react-router'
-import Home from './components/Home'
+import React from 'react';
+import { ApolloProvider } from '@apollo/client';
+import client from './apolloClient.js';
+import ArticleList from './components/ArticleList.tsx';
 
 function App() {
-
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route index element={<Home />} />
-      </Routes>
-    </BrowserRouter>
-  )
+    <ApolloProvider client={client}>
+      <div className="App">
+        <h1>Articles</h1>
+        <ArticleList />
+      </div>
+    </ApolloProvider>
+  );
 }
 
-export default App
+export default App;

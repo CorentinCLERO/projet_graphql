@@ -31,6 +31,7 @@ export type Article = {
   content: Scalars['String']['output'];
   createdAt: Scalars['String']['output'];
   id: Scalars['ID']['output'];
+  likesCount: Scalars['Int']['output'];
   title: Scalars['String']['output'];
 };
 
@@ -42,10 +43,27 @@ export type CreateUserResponse = {
   user?: Maybe<User>;
 };
 
+export type LikeArticleResponse = {
+  __typename?: 'LikeArticleResponse';
+  article?: Maybe<Article>;
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
+export type LikeResponse = {
+  __typename?: 'LikeResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addArticle?: Maybe<AddArticleResponse>;
   createUser?: Maybe<CreateUserResponse>;
+  deleteLike: LikeResponse;
+  likeArticle?: Maybe<LikeArticleResponse>;
   signIn?: Maybe<SignInResponse>;
 };
 
@@ -62,6 +80,16 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationDeleteLikeArgs = {
+  articleId: Scalars['ID']['input'];
+};
+
+
+export type MutationLikeArticleArgs = {
+  articleId: Scalars['ID']['input'];
+};
+
+
 export type MutationSignInArgs = {
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
@@ -69,6 +97,7 @@ export type MutationSignInArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  getArticles?: Maybe<Array<Maybe<Article>>>;
   me?: Maybe<GetUserResponse>;
 };
 
@@ -172,6 +201,8 @@ export type ResolversTypes = {
   CreateUserResponse: ResolverTypeWrapper<CreateUserResponse>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  LikeArticleResponse: ResolverTypeWrapper<LikeArticleResponse>;
+  LikeResponse: ResolverTypeWrapper<LikeResponse>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   SignInResponse: ResolverTypeWrapper<SignInResponse>;
@@ -188,6 +219,8 @@ export type ResolversParentTypes = {
   CreateUserResponse: CreateUserResponse;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
+  LikeArticleResponse: LikeArticleResponse;
+  LikeResponse: LikeResponse;
   Mutation: {};
   Query: {};
   SignInResponse: SignInResponse;
@@ -209,6 +242,7 @@ export type ArticleResolvers<ContextType = DataSourceContext, ParentType extends
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  likesCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -221,13 +255,31 @@ export type CreateUserResponseResolvers<ContextType = DataSourceContext, ParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type LikeArticleResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['LikeArticleResponse'] = ResolversParentTypes['LikeArticleResponse']> = {
+  article?: Resolver<Maybe<ResolversTypes['Article']>, ParentType, ContextType>;
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LikeResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['LikeResponse'] = ResolversParentTypes['LikeResponse']> = {
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MutationResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addArticle?: Resolver<Maybe<ResolversTypes['AddArticleResponse']>, ParentType, ContextType, RequireFields<MutationAddArticleArgs, 'content' | 'title'>>;
   createUser?: Resolver<Maybe<ResolversTypes['CreateUserResponse']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'password' | 'username'>>;
+  deleteLike?: Resolver<ResolversTypes['LikeResponse'], ParentType, ContextType, RequireFields<MutationDeleteLikeArgs, 'articleId'>>;
+  likeArticle?: Resolver<Maybe<ResolversTypes['LikeArticleResponse']>, ParentType, ContextType, RequireFields<MutationLikeArticleArgs, 'articleId'>>;
   signIn?: Resolver<Maybe<ResolversTypes['SignInResponse']>, ParentType, ContextType, RequireFields<MutationSignInArgs, 'password' | 'username'>>;
 };
 
 export type QueryResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  getArticles?: Resolver<Maybe<Array<Maybe<ResolversTypes['Article']>>>, ParentType, ContextType>;
   me?: Resolver<Maybe<ResolversTypes['getUserResponse']>, ParentType, ContextType>;
 };
 
@@ -258,6 +310,8 @@ export type Resolvers<ContextType = DataSourceContext> = {
   AddArticleResponse?: AddArticleResponseResolvers<ContextType>;
   Article?: ArticleResolvers<ContextType>;
   CreateUserResponse?: CreateUserResponseResolvers<ContextType>;
+  LikeArticleResponse?: LikeArticleResponseResolvers<ContextType>;
+  LikeResponse?: LikeResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   SignInResponse?: SignInResponseResolvers<ContextType>;

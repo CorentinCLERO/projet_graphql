@@ -48,5 +48,7 @@ model Like {
   articleId String
   user      User     @relation("UserLikes", fields: [userId], references: [id])
   article   Article  @relation("ArticleLikes", fields: [articleId], references: [id])
+  @@unique([userId, articleId])
   createdAt DateTime @default(now())
+
 }

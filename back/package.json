@@ -7,7 +7,7 @@
     "start": "npm run compile && node ./dist/index.js",
     "dev": "node --import ./scripts/register.js --watch src/index.ts",
     "generate": "graphql-codegen",
-    "prisma":"prisma",
+    "prisma": "prisma",
     "postinstall": "prisma generate"
   },
   "keywords": [],
@@ -16,6 +16,7 @@
   "description": "",
   "type": "module",
   "dependencies": {
+    "@apollo/client": "^3.12.9",
     "@apollo/server": "^4.11.3",
     "@graphql-codegen/cli": "^5.0.4",
     "@graphql-codegen/typescript": "^4.1.3",
