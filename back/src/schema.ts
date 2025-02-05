@@ -7,6 +7,8 @@ export const typeDefs = ggl`
         addArticle(title: String!, content: String!): AddArticleResponse
         deleteArticle(id: ID!): DeleteArticleResponse
         updateArticle(id: ID!, data: UpdateArticleProps!): UpdateArticleResponse
+        addComment(articleId: ID!, content: String!): AddCommentResponse
+        deleteComment(id: ID!): DeleteCommentResponse
     }
 
     type Query {
@@ -27,6 +29,21 @@ export const typeDefs = ggl`
         author: User!
         createdAt: String!
         updatedAt: String
+    }
+
+    type ArticleDetails {
+        id: ID!
+        title: String!
+        content: String!
+        author: User!
+        comments: [Comment]
+    }
+
+    type Comment {
+        id: ID!
+        content: String!
+        author: User!
+        createdAt: String!
     }
 
     input UpdateArticleProps {
@@ -67,7 +84,7 @@ export const typeDefs = ggl`
         code: Int!
         success: Boolean!
         message: String!
-        article: Article
+        article: ArticleDetails
     }
 
     type GetArticlesResponse {
@@ -88,5 +105,18 @@ export const typeDefs = ggl`
         success: Boolean!
         message: String!
         article: Article
+    }
+
+    type AddCommentResponse {
+        code: Int!
+        success: Boolean!
+        message: String!
+        comment: Comment
+    }
+
+    type DeleteCommentResponse {
+        code: Int!
+        success: Boolean!
+        message: String!
     }
 `;

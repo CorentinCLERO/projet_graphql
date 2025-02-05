@@ -66,7 +66,6 @@ export const resolvers: Resolvers = {
       };
     },
     addArticle: async (_, { title, content }, context) => {
-
       if (!context.user) {
         return {
           code: 401,
@@ -202,6 +201,81 @@ export const resolvers: Resolvers = {
         };
       }
     },
+    addComment: async(_, { articleId, content }, context) => {
+      if (!context.user) {
+        return {
+          code: 401,
+          message: "Unauthorized",
+          success: false,
+          comment: null,
+        };
+      }
+      try {
+        const newComment = await context.dataSources.db.comment.create({
+          data: {
+            content,
+            authorId: context.user.id,
+            articleId,
+          },
+          include: {
+            author: true,
+          }
+        });
+        return {
+          code: 201,
+          message: "Comment successfully created",
+          success: true,
+          comment: {
+            id: newComment.id,
+            content: newComment.content,
+            author: {
+              id: newComment.author.id,
+              username: newComment.author.username,
+            },
+            createdAt: newComment.createdAt.toISOString(),
+          }
+        }
+      } catch (e) {
+        console.error(e);
+        return {
+          code: 400,
+          message: "Failed to create comment",
+          success: false,
+          comment: null,
+        };
+      }
+    },
+    deleteComment: async(_, { id }, context) => {
+      if (!context.user) {
+        return {
+          code: 401,
+          message: "Unauthorized",
+          success: false,
+        };
+      }
+      try {
+        const comment = await context.dataSources.db.comment.findFirstOrThrow({where: {id}, include: { author: true }})
+        if (comment.authorId !== context.user.id) {
+          return {
+            code: 403,
+            message: "Forbidden",
+            success: false
+          }
+        }
+        await context.dataSources.db.comment.delete({where: {id}})
+        return {
+          code: 200,
+          message: "Comment deleted",
+          success: true
+        }
+      } catch (e) {
+        return {
+          code: 400,
+          message: "Failed to delete comment",
+          success: false,
+        };
+      }
+    }
   },
   Query: {
     me: async (_, __, context) => {
@@ -244,7 +318,8 @@ export const resolvers: Resolvers = {
         };
       }
       try {
-        const article = await context.dataSources.db.article.findFirstOrThrow({ where: {id}, include: {author: true}})
+        const article = await context.dataSources.db.article.findFirstOrThrow({ where: {id}, include: {author: true, comments: true}});
+        const comments = await context.dataSources.db.comment.findMany({where: {articleId: id}, include: {author: true}})
         if (!article) {
           return {
             code: 404,
@@ -261,6 +336,12 @@ export const resolvers: Resolvers = {
             ...article,
             createdAt: article.createdAt.toISOString(),
             updatedAt: article.updatedAt.toISOString(),
+            comments: comments.map(comment => {
+              return {
+                ...comment,
+                createdAt: comment.createdAt.toISOString()
+              }
+            })
           }
         }
       } catch (e) {
