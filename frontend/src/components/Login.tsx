@@ -1,12 +1,43 @@
 import React, { useState } from "react";
 import "../style.css";
-const Login: React.FC = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+import { gql, useMutation } from "@apollo/client";
+import { useNavigate } from "react-router";
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+const postLogIn = gql(`
+  mutation SignIn($username: String!, $password: String!) {
+    signIn(username: $username, password: $password) {
+      code
+      success
+      message
+      token
+      user {
+        id
+        username
+      }
+    }
+  }
+`);
+
+const Login: React.FC = () => {
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [signIn] = useMutation(postLogIn);
+  const navigate = useNavigate();
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Email:", email, "Password:", password);
+    console.log('Username:', username, 'Password:', password);
+    try {
+      const response = await signIn({ variables: { username, password } });
+      console.log('SignIn response:', response);
+      if (response.data.signIn.success) {
+        navigate('/login');
+      } else {
+        console.error('SignIn failed:', response.data.signIn.message);
+      }
+    } catch (error) {
+      console.error('Error during SignIn:', error);
+    }
   };
 
   return (
@@ -15,11 +46,11 @@ const Login: React.FC = () => {
         <img className="logo" src="/logo.png" alt="logo" />
         <form onSubmit={handleLogin}>
           <input
-            type="email"
+            type="text"
             className="input"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
           <input

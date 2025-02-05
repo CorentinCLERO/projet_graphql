@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -23,6 +24,14 @@ export type AddArticleResponse = {
   success: Scalars['Boolean']['output'];
 };
 
+export type AddCommentResponse = {
+  __typename?: 'AddCommentResponse';
+  code: Scalars['Int']['output'];
+  comment: Maybe<Comment>;
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
 export type Article = {
   __typename?: 'Article';
   author: User;
@@ -30,6 +39,24 @@ export type Article = {
   createdAt: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   title: Scalars['String']['output'];
+  updatedAt: Maybe<Scalars['String']['output']>;
+};
+
+export type ArticleDetails = {
+  __typename?: 'ArticleDetails';
+  author: User;
+  comments: Maybe<Array<Maybe<Comment>>>;
+  content: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  title: Scalars['String']['output'];
+};
+
+export type Comment = {
+  __typename?: 'Comment';
+  author: User;
+  content: Scalars['String']['output'];
+  createdAt: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
 };
 
 export type CreateUserResponse = {
@@ -40,11 +67,45 @@ export type CreateUserResponse = {
   user: Maybe<User>;
 };
 
+export type DeleteArticleResponse = {
+  __typename?: 'DeleteArticleResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
+export type DeleteCommentResponse = {
+  __typename?: 'DeleteCommentResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
+export type GetArticleResponse = {
+  __typename?: 'GetArticleResponse';
+  article: Maybe<ArticleDetails>;
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
+export type GetArticlesResponse = {
+  __typename?: 'GetArticlesResponse';
+  articles: Maybe<Array<Maybe<Article>>>;
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addArticle: Maybe<AddArticleResponse>;
+  addComment: Maybe<AddCommentResponse>;
   createUser: Maybe<CreateUserResponse>;
+  deleteArticle: Maybe<DeleteArticleResponse>;
+  deleteComment: Maybe<DeleteCommentResponse>;
   signIn: Maybe<SignInResponse>;
+  updateArticle: Maybe<UpdateArticleResponse>;
 };
 
 
@@ -54,9 +115,25 @@ export type MutationAddArticleArgs = {
 };
 
 
+export type MutationAddCommentArgs = {
+  articleId: Scalars['ID']['input'];
+  content: Scalars['String']['input'];
+};
+
+
 export type MutationCreateUserArgs = {
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteArticleArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteCommentArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -65,9 +142,22 @@ export type MutationSignInArgs = {
   username: Scalars['String']['input'];
 };
 
+
+export type MutationUpdateArticleArgs = {
+  data: UpdateArticleProps;
+  id: Scalars['ID']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  getArticle: Maybe<GetArticleResponse>;
+  getArticles: Maybe<GetArticlesResponse>;
   me: Maybe<GetUserResponse>;
+};
+
+
+export type QueryGetArticleArgs = {
+  id: Scalars['ID']['input'];
 };
 
 export type SignInResponse = {
@@ -77,6 +167,19 @@ export type SignInResponse = {
   success: Scalars['Boolean']['output'];
   token: Maybe<Scalars['String']['output']>;
   user: Maybe<User>;
+};
+
+export type UpdateArticleProps = {
+  content: InputMaybe<Scalars['String']['input']>;
+  title: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateArticleResponse = {
+  __typename?: 'UpdateArticleResponse';
+  article: Maybe<Article>;
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
 };
 
 export type User = {
@@ -92,3 +195,11 @@ export type GetUserResponse = {
   success: Scalars['Boolean']['output'];
   user: Maybe<User>;
 };
+
+export type QueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type QueryQuery = { __typename?: 'Query', me: { __typename?: 'getUserResponse', code: number, success: boolean, message: string, user: { __typename?: 'User', id: string, username: string } | null } | null };
+
+
+export const QueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Query"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]}}]} as unknown as DocumentNode<QueryQuery, QueryQueryVariables>;

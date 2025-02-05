@@ -1,7 +1,7 @@
 import React, { JSX, ReactNode, useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
 import { gql, useQuery } from "@apollo/client";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 type UserProviderProps = {
   children: ReactNode;
@@ -32,6 +32,7 @@ const UserProvider: React.FC<UserProviderProps> = ({
     },
   });
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState({
     id: 0,
     username: "",
@@ -40,8 +41,9 @@ const UserProvider: React.FC<UserProviderProps> = ({
 
   useEffect(() => {
     console.log(!data?.me?.success, user?.username);
-    if (!data?.me?.success || user?.username) navigate("/login");
-  }, [data, user, navigate]);
+    console.log(location.pathname);
+    if ((!data?.me?.success || user?.username) && location.pathname === "/") navigate("/login");
+  }, [data, user, navigate, location]);
 
   console.log(data, loading);
 
