@@ -9,9 +9,9 @@ services:
       - '4000:4000'
   graph-ql-frontend:
       container_name: graph-ql-frontend
-      # env_file: ./front/.env
+      # env_file: ./frontend/.env
       build:
-        context: ./front
+        context: ./frontend
         dockerfile: Dockerfile
       ports: 
         - '5173:5173'
