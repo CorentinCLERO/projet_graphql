@@ -1,0 +1,135 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .feed-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding-top: 20px;
+  }
+  
+  .article {
+    background-color: #fff;
+    border: 1px solid #e1e4e8;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    padding: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .article:hover {
+    background-color: #f7f9fa;
+  }
+  
+  .article-header {
+    margin-bottom: 8px;
+  }
+  
+  .username {
+    font-weight: 700;
+    color: #1a1a1a;
+    font-size: 16px;
+  }
+  
+  .article-content {
+    font-size: 15px;
+    line-height: 1.5;
+    color: #333;
+    margin-bottom: 12px;
+  }
+  
+  .article-footer {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .likes {
+    font-weight: 500;
+  }
+  
+  .article-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    width: 500px;
+    max-width: 90%;
+    max-height: 90vh;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #666;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .modal-details {
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(90vh - 40px);
+  }
+  
+  .modal-details .username {
+    display: block;
+    margin-bottom: 12px;
+  }
+  
+  .modal-details .article-content {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+  
+  .modal-details .likes {
+    display: block;
+    margin-bottom: 16px;
+  }
+  
+  .comments {
+    border-top: 1px solid #e1e4e8;
+    padding-top: 16px;
+  }
+  
+  .comment {
+    margin-bottom: 12px;
+  }
+  
+  .comment-username {
+    font-weight: 600;
+    margin-right: 8px;
+  }
+  
+  .comment-text {
+    font-size: 14px;
+  }
+  
+  @media (max-width: 768px) {
+    .feed-container {
+      padding: 10px;
+    }
+  
+    .modal-content {
+      width: 95%;
+    }
+  }
+  
+  
