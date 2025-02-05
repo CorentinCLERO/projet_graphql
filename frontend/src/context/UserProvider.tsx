@@ -1,10 +1,11 @@
-import React, { JSX, ReactNode, useState } from "react"
+import React, { JSX, ReactNode, useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
 import { gql, useQuery } from "@apollo/client";
+import { useNavigate } from "react-router";
 
 type UserProviderProps = {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
 const getMe = gql(`
   query Query {
@@ -18,29 +19,37 @@ const getMe = gql(`
       }
     }
   } 
-`)
+`);
 
-const UserProvider: React.FC<UserProviderProps> = ({children}): JSX.Element => {
-  const {data, loading} = useQuery(getMe, {
+const UserProvider: React.FC<UserProviderProps> = ({
+  children,
+}): JSX.Element => {
+  const { data, loading } = useQuery(getMe, {
     context: {
       headers: {
-        Authorization: localStorage.getItem('token')
-      }
-    }
-  })
-
-  console.log(data, loading)
+        Authorization: localStorage.getItem("token"),
+      },
+    },
+  });
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     id: 0,
-    username: '',
-    token: ''
-  })
+    username: "",
+    token: "",
+  });
+
+  useEffect(() => {
+    console.log(!data?.me?.success, user?.username);
+    if (!data?.me?.success || user?.username) navigate("/login");
+  }, [data, user, navigate]);
+
+  console.log(data, loading);
 
   return (
-    <UserContext.Provider value={{user, setUser, loading}}>
+    <UserContext.Provider value={{ user, setUser, loading }}>
       {children}
     </UserContext.Provider>
-  )
+  );
 };
 
-export { UserProvider }
+export { UserProvider };
