@@ -88,7 +88,7 @@ const Home: React.FC = () => {
     <>
       <div>
         <select onChange={(e) => setAuthorId(e.target.value)}>
-          <option value="">All Authors</option>
+          <option value="">Tout les auteurs</option>
           {authors && authors.map(author => {
             return <option key={author.id} value={author.id}>{author.username}</option>
           })}
@@ -97,12 +97,12 @@ const Home: React.FC = () => {
           setOrderByLikesAsc(true); 
           setOrderByLikesDesc(false); 
           refetch(); 
-          }}>Order by Likes Asc</button>
+          }}>trier par like Asc</button>
         <button onClick={() => { 
           setOrderByLikesAsc(false); 
           setOrderByLikesDesc(true); 
           refetch(); 
-          }}>Order by Likes Desc</button>
+          }}>trier par like Desc</button>
       </div>
       <Article articles={articles} refetch={refetch} />
     </>
