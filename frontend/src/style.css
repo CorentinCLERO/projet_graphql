@@ -22,7 +22,7 @@ body {
 .signup-form {
   background-color: #fff;
   border: 1px solid #dbdbdb;
-  border-radius: 1px;
+  border-radius: 20px;
   padding: 40px;
   max-width: 350px;
   width: 100%;
