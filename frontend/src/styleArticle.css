@@ -185,6 +185,11 @@ body {
   .comment-submit:hover {
     background-color: #1991db;
   }
+
+  .comment-submit:disabled {
+    background-color: #b0d4f1;
+    cursor: not-allowed;
+  }
   
   @media (max-width: 768px) {
     .feed-container {
