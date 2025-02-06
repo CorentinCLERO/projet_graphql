@@ -34,18 +34,17 @@ const UserProvider: React.FC<UserProviderProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState({
-    id: 0,
+    id: "",
     username: "",
     token: "",
   });
+  useEffect(() => {
+    if (data?.me?.user?.username && localStorage.getItem("token")) setUser({ id: data.me.user.id, username: data.me.user.username, token: localStorage.getItem("token") || "" });
+  }, [data]);
 
   useEffect(() => {
-    console.log(!data?.me?.success, user?.username);
-    console.log(location.pathname);
-    if ((!data?.me?.success || user?.username) && location.pathname === "/") navigate("/login");
+    if (data && (!data?.me?.success && !user.id) && location.pathname === "/") navigate("/login");
   }, [data, user, navigate, location]);
-
-  console.log(data, loading);
 
   return (
     <UserContext.Provider value={{ user, setUser, loading }}>

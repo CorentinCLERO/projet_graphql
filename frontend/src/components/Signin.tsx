@@ -4,13 +4,12 @@ import { Link } from 'react-router';
 import '../style.css';
 import { gql, useMutation } from '@apollo/client';
 
-const postSignIn = gql(`
+const postCreateUser = gql(`
   mutation SignIn($username: String!, $password: String!) {
-    signIn(username: $username, password: $password) {
+    createUser(username: $username, password: $password) {
       code
       success
       message
-      token
       user {
         id
         username
@@ -23,21 +22,22 @@ const SignUp: React.FC = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const navigate = useNavigate();
-  const [signIn] = useMutation(postSignIn);
+  const [createUser] = useMutation(postCreateUser);
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log('Username:', username, 'Password:', password);
     try {
-      const response = await signIn({ variables: { username, password } });
-      console.log('SignIn response:', response);
-      if (response.data.signIn.success) {
+      const response = await createUser({ variables: { username, password } });
+      console.log('CreateUser response:', response);
+      if (response.data.createUser.success) {
+        console.log('CreateUser successful:', response.data);
         navigate('/login');
       } else {
-        console.error('SignIn failed:', response.data.signIn.message);
+        console.error('CreateUser failed:', response.data.createUser.message);
       }
     } catch (error) {
-      console.error('Error during SignIn:', error);
+      console.error('Error during CreateUser:', error);
     }
   };
 
