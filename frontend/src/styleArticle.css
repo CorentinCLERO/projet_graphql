@@ -200,5 +200,195 @@ body {
       width: 95%;
     }
   }
+  .add-article-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: #1da1f2;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
   
+  .add-article-button:hover {
+    background-color: #1991db;
+  }
+  
+  /* Styles pour les actions d'article */
+  .article-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+  }
+  
+  .icon-button {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: #666;
+    border-radius: 50%;
+  }
+  
+  .icon-button:hover {
+    background-color: rgba(29, 161, 242, 0.1);
+    color: #1da1f2;
+  }
+  
+  /* Styles pour le formulaire d'ajout d'article */
+  .add-article-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .article-textarea {
+    width: 100%;
+    min-height: 150px;
+    padding: 12px;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    resize: vertical;
+    font-size: 16px;
+  }
+  
+  .post-button {
+    align-self: flex-end;
+    padding: 8px 24px;
+    background-color: #1da1f2;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .post-button:hover {
+    background-color: #1991db;
+  }
+  
+  .delete-comment {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: #666;
+    margin-left: 8px;
+    visibility: hidden;
+  }
+  
+  .comment:hover .delete-comment {
+    visibility: visible;
+  }
+  
+  .delete-comment:hover {
+    color: #e0245e;
+  }
+  
+  .modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  
+  .comment {
+    display: flex;
+    align-items: center;
+    padding: 4px 0;
+  }
+  
+  .comment-text {
+    margin-left: 4px;
+    flex-grow: 1;
+  }
+  
+  
+  .create-post-container form div {
+    margin-bottom: 15px;
+  }
+  
+  .create-post-container form label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .create-post-container form input,
+  .create-post-container form textarea {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .create-post-container .form-actions button {
+    background-color: #3b3baa;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: background-color 0.3s;
+  }
+  
+  .create-post-container .form-actions button:hover {
+    background-color: darkblue;
+  }
+  .feed-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .create-post-button {
+    background-color: blue;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 10px;
+    cursor: pointer;
+    border-radius: 17px;
+    transition: background-color 0.3s;
+    margin-top: 47px; 
+  margin-left: 20px;
+  margin-bottom: 20px; 
+  }
+  
+  .create-post-button:hover {
+    background-color: darkblue;
+  }
+  
+  .article {
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .article-header .username {
+    font-weight: bold;
+  }
+  
+  .article-footer .like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #888;
+  }
+  
+  .article-footer .like-button:hover {
+    color: #333;
+  }
   
