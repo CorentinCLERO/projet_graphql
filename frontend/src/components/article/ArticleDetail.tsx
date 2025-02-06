@@ -55,7 +55,8 @@ mutation Mutation($articleId: ID!, $content: String!) {
 }
 `;
 
-const ArticleDetail: React.FC<{ articleId: string, onClose: () => void }> = ({ articleId, onClose }) => {
+const ArticleDetail: React.FC<{ articleId: string, onClose: () => void, handleLike: (e: React.MouseEvent, articleId: string) => void }> = ({ articleId, onClose, handleLike }) => {
+  const [newComment, setNewComment] = useState<string>("")
   const { user } = useUserContext();
   const { data, refetch } = useQuery<GetArticleQuery>(GET_ARTICLE, {
     variables: { id: articleId },
@@ -77,7 +78,6 @@ const ArticleDetail: React.FC<{ articleId: string, onClose: () => void }> = ({ a
     }
   );
 
-
   const [article, setArticle] = useState<ArticleType | null>(null)
 
   useEffect(() => {
@@ -86,10 +86,6 @@ const ArticleDetail: React.FC<{ articleId: string, onClose: () => void }> = ({ a
     }
   }, [data]);
 
-  const handleLike = (e: React.MouseEvent) => {
-  }
-
-  const [newComment, setNewComment] = useState<string>("")
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -103,7 +99,14 @@ const ArticleDetail: React.FC<{ articleId: string, onClose: () => void }> = ({ a
     )
     setNewComment("")
     await refetch()
+
     }
+
+  const handleLikeArticle = async (e: React.MouseEvent, articleId: string) => {
+    e.stopPropagation()
+    await handleLike(e, articleId)
+    refetch()
+  }
 
   return (
     <div className="article-modal">
@@ -114,7 +117,7 @@ const ArticleDetail: React.FC<{ articleId: string, onClose: () => void }> = ({ a
         <div className="modal-details">
           <span className="username">{article?.author.username}</span>
           <p className="article-content">{article?.content}</p>
-          <button className="like-button" onClick={(e) => handleLike(e)}>
+          <button className="like-button" onClick={(e) => handleLikeArticle(e, article?.id || "")}>
                 ❤️ {article?.likes?.length}
               </button>
           <div className="comments">
