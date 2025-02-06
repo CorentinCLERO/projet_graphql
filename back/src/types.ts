@@ -115,6 +115,14 @@ export type GetArticlesResponse = {
   success: Scalars['Boolean']['output'];
 };
 
+export type GetAuthorsResponse = {
+  __typename?: 'GetAuthorsResponse';
+  authors?: Maybe<Array<Maybe<User>>>;
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
 export type Like = {
   __typename?: 'Like';
   id: Scalars['ID']['output'];
@@ -197,6 +205,7 @@ export type Query = {
   __typename?: 'Query';
   getArticle?: Maybe<GetArticleResponse>;
   getArticles?: Maybe<GetArticlesResponse>;
+  getAuthors?: Maybe<GetAuthorsResponse>;
   me?: Maybe<GetUserResponse>;
 };
 
@@ -323,6 +332,7 @@ export type ResolversTypes = {
   DeleteLikeResponse: ResolverTypeWrapper<DeleteLikeResponse>;
   GetArticleResponse: ResolverTypeWrapper<GetArticleResponse>;
   GetArticlesResponse: ResolverTypeWrapper<GetArticlesResponse>;
+  GetAuthorsResponse: ResolverTypeWrapper<GetAuthorsResponse>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Like: ResolverTypeWrapper<Like>;
@@ -351,6 +361,7 @@ export type ResolversParentTypes = {
   DeleteLikeResponse: DeleteLikeResponse;
   GetArticleResponse: GetArticleResponse;
   GetArticlesResponse: GetArticlesResponse;
+  GetAuthorsResponse: GetAuthorsResponse;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   Like: Like;
@@ -462,6 +473,14 @@ export type GetArticlesResponseResolvers<ContextType = DataSourceContext, Parent
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type GetAuthorsResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['GetAuthorsResponse'] = ResolversParentTypes['GetAuthorsResponse']> = {
+  authors?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type LikeResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Like'] = ResolversParentTypes['Like']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
@@ -492,6 +511,7 @@ export type MutationResolvers<ContextType = DataSourceContext, ParentType extend
 export type QueryResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   getArticle?: Resolver<Maybe<ResolversTypes['GetArticleResponse']>, ParentType, ContextType, RequireFields<QueryGetArticleArgs, 'id'>>;
   getArticles?: Resolver<Maybe<ResolversTypes['GetArticlesResponse']>, ParentType, ContextType, Partial<QueryGetArticlesArgs>>;
+  getAuthors?: Resolver<Maybe<ResolversTypes['GetAuthorsResponse']>, ParentType, ContextType>;
   me?: Resolver<Maybe<ResolversTypes['getUserResponse']>, ParentType, ContextType>;
 };
 
@@ -530,6 +550,7 @@ export type Resolvers<ContextType = DataSourceContext> = {
   DeleteLikeResponse?: DeleteLikeResponseResolvers<ContextType>;
   GetArticleResponse?: GetArticleResponseResolvers<ContextType>;
   GetArticlesResponse?: GetArticlesResponseResolvers<ContextType>;
+  GetAuthorsResponse?: GetAuthorsResponseResolvers<ContextType>;
   Like?: LikeResolvers<ContextType>;
   LogInResponse?: LogInResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
