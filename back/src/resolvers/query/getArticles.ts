@@ -10,7 +10,7 @@ export const getArticles : QueryResolvers["getArticles"] = async(_, __, context)
       };
     }
     try {
-      const articles = await context.dataSources.db.article.findMany({ include: {author: true}});
+      const articles = await context.dataSources.db.article.findMany({ include: {author: true, likes: { include: { user: true } } } });
       if (!articles) {
         return {
           code: 404,
@@ -28,6 +28,15 @@ export const getArticles : QueryResolvers["getArticles"] = async(_, __, context)
             ...article,
             createdAt: article.createdAt.toISOString(),
             updatedAt: article.updatedAt.toISOString(),
+            likes: article.likes.map(like => {
+              return {
+                ...like,
+                user: {
+                  ...like.user,
+                  createdAt: like.user.createdAt.toISOString(),
+                }
+              }
+            })
           }
         })
         }

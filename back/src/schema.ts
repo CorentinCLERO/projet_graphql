@@ -9,6 +9,8 @@ export const typeDefs = ggl`
         updateArticle(id: ID!, data: UpdateArticleProps!): UpdateArticleResponse
         addComment(articleId: ID!, content: String!): AddCommentResponse
         deleteComment(id: ID!): DeleteCommentResponse
+        addLike(articleId: ID!): AddLikeResponse
+        deleteLike(id: ID!): DeleteLikeResponse
     }
 
     type Query {
@@ -29,6 +31,7 @@ export const typeDefs = ggl`
         author: User!
         createdAt: String!
         updatedAt: String
+        likes: [Like]
     }
 
     type ArticleDetails {
@@ -37,6 +40,12 @@ export const typeDefs = ggl`
         content: String!
         author: User!
         comments: [Comment]
+        likes: [Like]
+    }
+
+    type Like {
+        id: ID!
+        user: User!
     }
 
     type Comment {
@@ -115,6 +124,19 @@ export const typeDefs = ggl`
     }
 
     type DeleteCommentResponse {
+        code: Int!
+        success: Boolean!
+        message: String!
+    }
+    
+    type AddLikeResponse {
+        code: Int!
+        success: Boolean!
+        message: String!
+        like: Like
+    }
+
+    type DeleteLikeResponse {
         code: Int!
         success: Boolean!
         message: String!

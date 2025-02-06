@@ -10,7 +10,7 @@ export const getArticle: QueryResolvers["getArticle"] = async(_, { id }, context
       };
     }
     try {
-      const article = await context.dataSources.db.article.findFirstOrThrow({ where: {id}, include: {author: true, comments: true}});
+      const article = await context.dataSources.db.article.findFirstOrThrow({ where: {id}, include: {author: true, comments: true, likes: { include: {user: true}}} });
       const comments = await context.dataSources.db.comment.findMany({where: {articleId: id}, include: {author: true}})
       if (!article) {
         return {
@@ -26,6 +26,15 @@ export const getArticle: QueryResolvers["getArticle"] = async(_, { id }, context
         success: true,
         article: {
           ...article,
+          likes: article.likes.map(like => {
+            return {
+              ...like,
+              user: {
+                ...like.user,
+                createdAt: like.user.createdAt.toISOString(),
+              }
+            }
+          }),
           createdAt: article.createdAt.toISOString(),
           updatedAt: article.updatedAt.toISOString(),
           comments: comments.map(comment => {
@@ -46,4 +55,3 @@ export const getArticle: QueryResolvers["getArticle"] = async(_, { id }, context
       };
     }
   };
-  

@@ -9,6 +9,8 @@ import { deleteComment } from "./mutation/deleteComment.js";
 import { me } from "./query/me.js";
 import { getArticle } from "./query/getArticle.js";
 import { getArticles } from "./query/getArticles.js";
+import { addLike } from "./mutation/addLike.js";
+import { deleteLike } from "./mutation/deleteLike.js";
 
 export const resolvers: Resolvers = {
   Mutation: {
@@ -19,6 +21,8 @@ export const resolvers: Resolvers = {
     updateArticle,
     addComment,
     deleteComment,
+    addLike,
+    deleteLike
   },
   Query: {
     me,
