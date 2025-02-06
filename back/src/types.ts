@@ -205,6 +205,13 @@ export type QueryGetArticleArgs = {
   id: Scalars['ID']['input'];
 };
 
+
+export type QueryGetArticlesArgs = {
+  authorId?: InputMaybe<Scalars['String']['input']>;
+  orderByLikesAsc?: InputMaybe<Scalars['Boolean']['input']>;
+  orderByLikesDesc?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 export type UpdateArticleProps = {
   content?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
@@ -484,7 +491,7 @@ export type MutationResolvers<ContextType = DataSourceContext, ParentType extend
 
 export type QueryResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   getArticle?: Resolver<Maybe<ResolversTypes['GetArticleResponse']>, ParentType, ContextType, RequireFields<QueryGetArticleArgs, 'id'>>;
-  getArticles?: Resolver<Maybe<ResolversTypes['GetArticlesResponse']>, ParentType, ContextType>;
+  getArticles?: Resolver<Maybe<ResolversTypes['GetArticlesResponse']>, ParentType, ContextType, Partial<QueryGetArticlesArgs>>;
   me?: Resolver<Maybe<ResolversTypes['getUserResponse']>, ParentType, ContextType>;
 };
 

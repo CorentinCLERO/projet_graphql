@@ -1,36 +1,9 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
-import React, { useEffect, useState } from "react";
+import { gql, useMutation } from "@apollo/client";
+import React, { useState } from "react";
 import ArticleDetail from "./ArticleDetail";
+import { Article as ArticleType } from "../../gql/graphql";
 import { useUserContext } from "../../context/UserContext";
-import { Article as ArticleType, GetArticlesQuery } from "../../gql/graphql";
 
-const GET_ARTICLES = gql`
-  query GetArticles {
-    getArticles {
-      code
-      success
-      message
-      articles {
-        id
-        title
-        content
-        author {
-          id
-          username
-        }
-        createdAt
-        updatedAt
-        likes {
-          id
-          user {
-            id
-            username
-          }
-        }
-      }
-    }
-  }
-`;
 
 const ADD_LIKE = gql`
   mutation AddLike($articleId: ID!) {
@@ -59,17 +32,8 @@ const REMOVE_LIKE = gql`
   }
 `;
 
-const Article: React.FC = () => {
+const Article: React.FC<{articles: ArticleType[] | null, refetch: () => void}> = ({ articles, refetch }) => {
   const { user } = useUserContext();
-  const { data, refetch } = useQuery<GetArticlesQuery>(GET_ARTICLES, {
-    skip: !user.token,
-    context: {
-      headers: {
-        authorization: user.token ? user.token : "",
-      },
-    },
-  });
-  const [articles, setArticles] = useState<ArticleType[] | null>([])
   const [selectedArticle, setSelectedArticle] = useState<ArticleType | null>(null)
   const [addLike] = useMutation(ADD_LIKE, {
     context: {
@@ -85,12 +49,6 @@ const Article: React.FC = () => {
       },
     },
   })
-
-  useEffect(() => {
-      if (data && data.getArticles && data.getArticles.articles) {
-        setArticles(data.getArticles.articles.filter(article => article !== null));
-      }
-  }, [data]);
 
   const handleArticleClick = (article: ArticleType) => {
       setSelectedArticle(article)

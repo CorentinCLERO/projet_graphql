@@ -16,7 +16,7 @@ export const typeDefs = ggl`
     type Query {
         me: getUserResponse
         getArticle(id: ID!): GetArticleResponse
-        getArticles: GetArticlesResponse
+        getArticles(authorId: String, orderByLikesAsc: Boolean, orderByLikesDesc: Boolean): GetArticlesResponse
     }
 
     type User {
