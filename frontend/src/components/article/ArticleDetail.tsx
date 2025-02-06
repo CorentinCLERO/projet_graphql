@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, gql, useMutation } from '@apollo/client';
 import { GetArticleQuery } from '../../gql/graphql';
 import { useUserContext } from '../../context/UserContext';
 import { ArticleDetails as ArticleType } from "../../gql/graphql";
@@ -36,9 +36,28 @@ query GetArticle($id: ID!) {
   }
 `;
 
+const ADD_COMMENT = gql`
+mutation Mutation($articleId: ID!, $content: String!) {
+  addComment(articleId: $articleId, content: $content) {
+    code
+    success
+    message
+    comment {
+      id
+      content
+      author {
+        id
+        username
+      }
+      createdAt
+    }
+  }
+}
+`;
+
 const ArticleDetail: React.FC<{ articleId: string, onClose: () => void }> = ({ articleId, onClose }) => {
   const { user } = useUserContext();
-  const { data } = useQuery<GetArticleQuery>(GET_ARTICLE, {
+  const { data, refetch } = useQuery<GetArticleQuery>(GET_ARTICLE, {
     variables: { id: articleId },
     skip: !user.token,
       context: {
@@ -47,6 +66,16 @@ const ArticleDetail: React.FC<{ articleId: string, onClose: () => void }> = ({ a
         },
       },
   });
+
+  const [mutateFunction] = useMutation(ADD_COMMENT,
+    {
+      context: {
+        headers: {
+          authorization: user.token ? user.token : "",
+        }
+      },
+    }
+  );
 
 
   const [article, setArticle] = useState<ArticleType | null>(null)
@@ -57,30 +86,23 @@ const ArticleDetail: React.FC<{ articleId: string, onClose: () => void }> = ({ a
     }
   }, [data]);
 
-  const handleLike = (e: React.MouseEvent, articleId: string | undefined) => {
+  const handleLike = (e: React.MouseEvent) => {
   }
 
-  const [newComment, setNewComment] = useState("")
+  const [newComment, setNewComment] = useState<string>("")
 
-  const handleCommentSubmit = (e: React.FormEvent) => {
-    // e.preventDefault()
-    // if (newComment.trim() && selectedArticle) {
-    //   const updatedArticle = {
-    //     ...selectedArticle,
-    //     comments: [
-    //       ...selectedArticle.comments,
-    //       {
-    //         id: Date.now(),
-    //         username: "currentUser",
-    //         text: newComment.trim(),
-    //       },
-    //     ],
-    //   }
-
-    //   setArticles(articles.map((article) => (article.id === updatedArticle.id ? updatedArticle : article)))
-
-    //   setSelectedArticle(updatedArticle)
-    //   setNewComment("")
+  const handleCommentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    await mutateFunction(
+      {
+        variables: {
+          articleId: articleId,
+          content: newComment
+        }
+      }
+    )
+    setNewComment("")
+    await refetch()
     }
 
   return (
@@ -92,7 +114,7 @@ const ArticleDetail: React.FC<{ articleId: string, onClose: () => void }> = ({ a
         <div className="modal-details">
           <span className="username">{article?.author.username}</span>
           <p className="article-content">{article?.content}</p>
-          <button className="like-button" onClick={(e) => handleLike(e, article?.id)}>
+          <button className="like-button" onClick={(e) => handleLike(e)}>
                 ❤️ {article?.likes?.length}
               </button>
           <div className="comments">
@@ -111,7 +133,7 @@ const ArticleDetail: React.FC<{ articleId: string, onClose: () => void }> = ({ a
                   placeholder="Add a comment..."
                   className="comment-input"
                 /><br></br>
-                <button type="submit" className="comment-submit">
+                <button type="submit" className="comment-submit" disabled={newComment.length === 0}>
                   Send
                 </button>
               </form>
