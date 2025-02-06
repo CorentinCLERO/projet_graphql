@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import "../style.css";
 import { gql, useMutation } from "@apollo/client";
 import { useNavigate } from "react-router";
+import { useUserContext } from "../context/UserContext";
 
 const postLogIn = gql(`
-  mutation SignIn($username: String!, $password: String!) {
-    signIn(username: $username, password: $password) {
+  mutation LogIn($username: String!, $password: String!) {
+    logIn(username: $username, password: $password) {
       code
       success
       message
@@ -21,22 +22,26 @@ const postLogIn = gql(`
 const Login: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [signIn] = useMutation(postLogIn);
+  const [logIn] = useMutation(postLogIn);
   const navigate = useNavigate();
+  const { setUser } = useUserContext();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log('Username:', username, 'Password:', password);
     try {
-      const response = await signIn({ variables: { username, password } });
-      console.log('SignIn response:', response);
-      if (response.data.signIn.success) {
-        navigate('/login');
+      const response = await logIn({ variables: { username, password } });
+      console.log('LogIn response:', response);
+      if (response.data.logIn.success) {
+        console.log('LogIn successful:', response.data);
+        localStorage.setItem('token', response.data.logIn.token);
+        setUser({ id: response.data.logIn.user.id, username: response.data.logIn.user.username, token: response.data.logIn.token });
+        navigate('/');
       } else {
-        console.error('SignIn failed:', response.data.signIn.message);
+        console.error('LogIn failed:', response.data.logIn.message);
       }
     } catch (error) {
-      console.error('Error during SignIn:', error);
+      console.error('Error during LogIn:', error);
     }
   };
 

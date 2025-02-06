@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 
 interface User {
-  id: number;
+  id: string;
   username: string;
   token: string;
 }
@@ -14,7 +14,7 @@ type UserContentType = {
 
 export const UserContext = createContext<UserContentType>({
   user: {
-    id: 0,
+    id: "",
     username: "",
     token: "",
   },
