@@ -59,6 +59,16 @@ const Article: React.FC = () => {
         setSelectedArticle(null);
     };
 
+    const handleLike = (e: React.MouseEvent, articleId: number) => {
+      // e.stopPropagation()
+      // setArticles(
+      //   articles.map((article) => (article.id === articleId ? { ...article, likes: article.likes + 1 } : article)),
+      // )
+      // if (selectedArticle && selectedArticle.id === articleId) {
+      //   setSelectedArticle({ ...selectedArticle, likes: selectedArticle.likes + 1 })
+      // }
+    }
+
     return (
         <div className="feed-container">
           {articles?.map((article) => (
@@ -70,8 +80,10 @@ const Article: React.FC = () => {
                 <p>{article.content}</p>
               </div>
               <div className="article-footer">
-                <span className="likes">{article?.likes?.length} likes</span>
-              </div>
+              <button className="like-button" onClick={(e) => handleLike(e, article.id)}>
+              ❤️ {article.likes?.length}
+              </button>              
+            </div>
             </div>
           ))}
           {selectedArticle && <ArticleDetail articleId={selectedArticle.id} onClose={closeModal} />}

@@ -48,8 +48,22 @@ body {
     color: #666;
   }
   
-  .likes {
-    font-weight: 500;
+  .like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #1da1f2;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.2s ease;
+  }
+  
+  .like-button:hover,
+  .like-button[data-liked="true"] {
+    color: #e0245e;
   }
   
   .article-modal {
@@ -88,6 +102,9 @@ body {
     padding: 20px;
     overflow-y: auto;
     max-height: calc(90vh - 40px);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
   
   .modal-details .username {
@@ -98,20 +115,30 @@ body {
   .modal-details .article-content {
     font-size: 18px;
     margin-bottom: 16px;
+    text-align: left;
+    align-self: stretch;
   }
   
-  .modal-details .likes {
-    display: block;
+  .modal-details .like-button {
     margin-bottom: 16px;
+    align-self: flex-start;
+  }
+  
+  .comments-section {
+    width: 100%;
   }
   
   .comments {
     border-top: 1px solid #e1e4e8;
     padding-top: 16px;
+    margin-bottom: 16px;
+    width: 100%;
   }
   
   .comment {
     margin-bottom: 12px;
+    font-size: 12px;
+    text-align: left;
   }
   
   .comment-username {
@@ -120,7 +147,43 @@ body {
   }
   
   .comment-text {
+    font-size: 12px;
+  }
+  
+  .comment-form {
+    display: flex;
+    width: 100%;
+    margin-top: 16px;
+  }
+  
+  .comment-input-wrapper {
+    display: flex;
+    width: 100%;
+    border: 1px solid #e1e4e8;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  
+  .comment-input {
+    flex-grow: 1;
+    padding: 8px 12px;
+    border: none;
     font-size: 14px;
+    outline: none;
+  }
+  
+  .comment-submit {
+    padding: 8px 20px;
+    background-color: #1da1f2;
+    color: white;
+    border-radius: 17px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .comment-submit:hover {
+    background-color: #1991db;
   }
   
   @media (max-width: 768px) {
