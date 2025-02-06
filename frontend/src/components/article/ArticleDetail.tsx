@@ -57,6 +57,32 @@ const ArticleDetail: React.FC<{ articleId: string, onClose: () => void }> = ({ a
     }
   }, [data]);
 
+  const handleLike = (e: React.MouseEvent, articleId: string | undefined) => {
+  }
+
+  const [newComment, setNewComment] = useState("")
+
+  const handleCommentSubmit = (e: React.FormEvent) => {
+    // e.preventDefault()
+    // if (newComment.trim() && selectedArticle) {
+    //   const updatedArticle = {
+    //     ...selectedArticle,
+    //     comments: [
+    //       ...selectedArticle.comments,
+    //       {
+    //         id: Date.now(),
+    //         username: "currentUser",
+    //         text: newComment.trim(),
+    //       },
+    //     ],
+    //   }
+
+    //   setArticles(articles.map((article) => (article.id === updatedArticle.id ? updatedArticle : article)))
+
+    //   setSelectedArticle(updatedArticle)
+    //   setNewComment("")
+    }
+
   return (
     <div className="article-modal">
       <div className="modal-content">
@@ -66,7 +92,9 @@ const ArticleDetail: React.FC<{ articleId: string, onClose: () => void }> = ({ a
         <div className="modal-details">
           <span className="username">{article?.author.username}</span>
           <p className="article-content">{article?.content}</p>
-          <span className="likes">{article?.likes?.length} likes</span>
+          <button className="like-button" onClick={(e) => handleLike(e, article?.id)}>
+                ❤️ {article?.likes?.length}
+              </button>
           <div className="comments">
             {article?.comments?.map((comment) => (
               <div key={comment?.id} className="comment">
@@ -75,6 +103,18 @@ const ArticleDetail: React.FC<{ articleId: string, onClose: () => void }> = ({ a
               </div>
             ))}
           </div>
+          <form onSubmit={handleCommentSubmit} className="comment-form">
+                <input
+                  type="text"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Add a comment..."
+                  className="comment-input"
+                /><br></br>
+                <button type="submit" className="comment-submit">
+                  Send
+                </button>
+              </form>
         </div>
       </div>
     </div>
