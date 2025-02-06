@@ -7,8 +7,8 @@ import { Article as ArticleType, GetArticlesQuery, GetAuthorsQuery, User } from 
 import { useEffect, useState } from "react";
 
 const GET_ARTICLES = gql`
-  query GetArticles($authorId: String) {
-    getArticles(authorId: $authorId) {
+  query GetArticles($authorId: String, $orderByLikesAsc: Boolean, $orderByLikesDesc: Boolean) {
+    getArticles(authorId: $authorId, orderByLikesAsc: $orderByLikesAsc, orderByLikesDesc: $orderByLikesDesc) {
       code
       success
       message
@@ -51,8 +51,10 @@ const GET_AUTHORS = gql`
 const Home: React.FC = () => {
   const { user } = useUserContext();
   const [authorId, setAuthorId] = useState<string | null>(null);
+  const [orderByLikesAsc, setOrderByLikesAsc] = useState<boolean | null>(null);
+  const [orderByLikesDesc, setOrderByLikesDesc] = useState<boolean | null>(null);
   const { data: articlesData, refetch } = useQuery<GetArticlesQuery>(GET_ARTICLES, {
-    variables: { authorId },
+    variables: { authorId, orderByLikesAsc, orderByLikesDesc },
     skip: !user.token,
     context: {
       headers: {
@@ -73,14 +75,12 @@ const Home: React.FC = () => {
   useEffect(() => {
     if (articlesData && articlesData.getArticles && articlesData.getArticles.articles) {
       setArticles(articlesData.getArticles.articles.filter(article => article !== null));
-      console.log(articlesData.getArticles.articles);
     }
   }, [articlesData]);
 
   useEffect(() => {
     if (authorsData && authorsData.getAuthors && authorsData.getAuthors.authors) {
       setAuthors(authorsData.getAuthors.authors.filter(author => author !== null));
-      console.log("a",authorsData.getAuthors.authors);
     }
   }, [authorsData]);
 
@@ -93,6 +93,16 @@ const Home: React.FC = () => {
             return <option key={author.id} value={author.id}>{author.username}</option>
           })}
         </select>
+        <button onClick={() => { 
+          setOrderByLikesAsc(true); 
+          setOrderByLikesDesc(false); 
+          refetch(); 
+          }}>Order by Likes Asc</button>
+        <button onClick={() => { 
+          setOrderByLikesAsc(false); 
+          setOrderByLikesDesc(true); 
+          refetch(); 
+          }}>Order by Likes Desc</button>
       </div>
       <Article articles={articles} refetch={refetch} />
     </>
