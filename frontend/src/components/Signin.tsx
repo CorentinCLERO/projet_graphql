@@ -2,17 +2,43 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router';
 import '../style.css';
+import { gql, useMutation } from '@apollo/client';
+
+const postSignIn = gql(`
+  mutation SignIn($username: String!, $password: String!) {
+    signIn(username: $username, password: $password) {
+      code
+      success
+      message
+      token
+      user {
+        id
+        username
+      }
+    }
+  }
+`);
 
 const SignUp: React.FC = () => {
   const [username, setUsername] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const navigate = useNavigate();
+  const [signIn] = useMutation(postSignIn);
 
-  const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Username:', username, 'Email:', email, 'Password:', password);
-    navigate('/login');
+    console.log('Username:', username, 'Password:', password);
+    try {
+      const response = await signIn({ variables: { username, password } });
+      console.log('SignIn response:', response);
+      if (response.data.signIn.success) {
+        navigate('/login');
+      } else {
+        console.error('SignIn failed:', response.data.signIn.message);
+      }
+    } catch (error) {
+      console.error('Error during SignIn:', error);
+    }
   };
 
   return (
@@ -26,14 +52,6 @@ const SignUp: React.FC = () => {
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-          <input
-            type="email"
-            className="input"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             required
           />
           <input
