@@ -313,7 +313,7 @@ const ArticleDetail: React.FC<{
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Add a comment..."
-              className="comment-input"
+              className="input-article-style"
             />
             <br></br>
             <button
