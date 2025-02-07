@@ -139,6 +139,12 @@ body {
     margin-bottom: 12px;
     font-size: 12px;
     text-align: left;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .comment-delete {
+    cursor: pointer;
   }
   
   .comment-username {
