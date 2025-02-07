@@ -33,17 +33,19 @@ const REMOVE_LIKE = gql`
   }
 `;
 
-const Article: React.FC<{articles: ArticleType[] | null, refetch: () => void}> = ({ articles, refetch }) => {
+const Article: React.FC<{articles: ArticleType[] | null}> = ({ articles }) => {
   const { user } = useUserContext();
   const [selectedArticle, setSelectedArticle] = useState<ArticleType | null>(null)
   const [addLike] = useMutation(ADD_LIKE, {
+    refetchQueries: ["GetArticles", "GetArticle"],
     context: {
       headers: {
         authorization: user.token ? user.token : "",
       },
-    },
+    }
   })
   const [removeLike] = useMutation(REMOVE_LIKE, {
+    refetchQueries: ["GetArticles", "GetArticle"],
     context: {
       headers: {
         authorization: user.token ? user.token : "",
@@ -67,7 +69,7 @@ const Article: React.FC<{articles: ArticleType[] | null, refetch: () => void}> =
       if (response.data.addLike.success && articles) {
         articles.map((article) => {
           if (article.id === articleId) {
-            refetch();
+            //refetch();
           }
           return article;
         });
@@ -76,7 +78,7 @@ const Article: React.FC<{articles: ArticleType[] | null, refetch: () => void}> =
         if (removeResponse.data.deleteLike.success && articles) {
           articles.map((article) => {
             if (article.id === articleId) {
-              refetch();
+              //refetch();
             }
             return article;
           });

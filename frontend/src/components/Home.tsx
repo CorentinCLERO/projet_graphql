@@ -104,7 +104,7 @@ const Home: React.FC = () => {
           refetch(); 
           }}>trier par like Desc</button>
       </div>
-      <Article articles={articles} refetch={refetch} />
+      <Article articles={articles} />
     </>
   );
 }
