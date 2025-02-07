@@ -3,8 +3,6 @@ import React, { useState } from "react";
 import ArticleDetail from "./ArticleDetail";
 import { Article as ArticleType } from "../../gql/graphql";
 import { useUserContext } from "../../context/UserContext";
-import { Link } from "react-router";
-
 
 const ADD_LIKE = gql`
   mutation AddLike($articleId: ID!) {
@@ -62,38 +60,29 @@ const Article: React.FC<{articles: ArticleType[] | null}> = ({ articles }) => {
   };
 
   const handleLike = async (e: React.MouseEvent, articleId: string) => {
-    e.stopPropagation()
-    console.log(articleId, user)
+    e.stopPropagation();
+  
     try {
       const response = await addLike({ variables: { articleId } });
-      if (response.data.addLike.success && articles) {
-        articles.map((article) => {
-          if (article.id === articleId) {
-            //refetch();
-          }
-          return article;
-        });
-      } else {
-        const removeResponse = await removeLike({ variables: { deleteLikeId: articleId } });
-        if (removeResponse.data.deleteLike.success && articles) {
-          articles.map((article) => {
-            if (article.id === articleId) {
-              //refetch();
-            }
-            return article;
-          });
-        }
+      
+      if (!response.data.addLike.success) {
+        await toggleLike(articleId);
       }
     } catch (error) {
       console.error('Error during AddLike:', error);
     }
-  }
+  };
+  
+  const toggleLike = async (articleId: string) => {
+    try {
+      await removeLike({ variables: { deleteLikeId: articleId } });
+    } catch (error) {
+      console.error('Error during RemoveLike:', error);
+    }
+  };
 
   return (
       <div className="feed-container">
-      <Link to="/CreatePost"> 
-        <button className="create-post-button">Create Post</button>
-      </Link>
         {articles?.map((article) => (
           <div key={article.id} className="article" onClick={() => handleArticleClick(article)}>
             <div className="article-header">
