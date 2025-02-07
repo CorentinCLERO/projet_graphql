@@ -347,6 +347,11 @@ body {
   .create-post-container .form-actions button:hover {
     background-color: darkblue;
   }
+
+  .create-post-container .form-actions button:hover {
+    background-color: darkblue;
+  }
+  
   .feed-container {
     display: flex;
     flex-direction: column;
@@ -386,6 +391,16 @@ body {
   .menu-container button:hover {
       background-color: #0056b3;
   }
+
+  #disconnet  {
+    background-color: red;
+    
+}
+
+#disconnet:hover {
+    background-color: #b32100d2;
+}
+
 
   .create-post-button {
       background-color: #28a745;

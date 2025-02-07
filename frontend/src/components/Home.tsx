@@ -100,7 +100,7 @@ const Home: React.FC = () => {
         setOrderByLikesDesc(false); 
         refetch(); 
       }}>
-        Trier par Like ↑
+        Trier par Like "Croissant"
       </button>
       
       <button onClick={() => { 
@@ -108,14 +108,14 @@ const Home: React.FC = () => {
         setOrderByLikesDesc(true); 
         refetch(); 
       }}>
-        Trier par Like ↓
+        Trier par Like "Decroissant"
       </button>
       
       <Link to="/CreatePost"> 
         <button className="create-post-button">Créer un Post</button>
       </Link>
-      <button className="create-post-button" onClick={() => {localStorage.removeItem('token'); window.location.reload();}}>
-        se déconnecter
+      <button id="disconnet" onClick={() => {localStorage.removeItem('token'); window.location.reload();}}>
+        Se déconnecter
       </button>
     </div>
 
