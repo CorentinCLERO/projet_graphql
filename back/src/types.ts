@@ -1,4 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
+import { Article, Comment, Like } from './src/models';
 import { DataSourceContext } from './context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -7,6 +8,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -115,6 +117,14 @@ export type GetArticlesResponse = {
   success: Scalars['Boolean']['output'];
 };
 
+export type GetAuthorsResponse = {
+  __typename?: 'GetAuthorsResponse';
+  authors?: Maybe<Array<Maybe<User>>>;
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
 export type Like = {
   __typename?: 'Like';
   id: Scalars['ID']['output'];
@@ -197,12 +207,20 @@ export type Query = {
   __typename?: 'Query';
   getArticle?: Maybe<GetArticleResponse>;
   getArticles?: Maybe<GetArticlesResponse>;
+  getAuthors?: Maybe<GetAuthorsResponse>;
   me?: Maybe<GetUserResponse>;
 };
 
 
 export type QueryGetArticleArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetArticlesArgs = {
+  authorId?: InputMaybe<Scalars['String']['input']>;
+  orderByLikesAsc?: InputMaybe<Scalars['Boolean']['input']>;
+  orderByLikesDesc?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateArticleProps = {
@@ -303,19 +321,20 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  AddArticleResponse: ResolverTypeWrapper<AddArticleResponse>;
-  AddCommentResponse: ResolverTypeWrapper<AddCommentResponse>;
-  AddLikeResponse: ResolverTypeWrapper<AddLikeResponse>;
+  AddArticleResponse: ResolverTypeWrapper<Omit<AddArticleResponse, 'article'> & { article?: Maybe<ResolversTypes['Article']> }>;
+  AddCommentResponse: ResolverTypeWrapper<Omit<AddCommentResponse, 'comment'> & { comment?: Maybe<ResolversTypes['Comment']> }>;
+  AddLikeResponse: ResolverTypeWrapper<Omit<AddLikeResponse, 'like'> & { like?: Maybe<ResolversTypes['Like']> }>;
   Article: ResolverTypeWrapper<Article>;
-  ArticleDetails: ResolverTypeWrapper<ArticleDetails>;
+  ArticleDetails: ResolverTypeWrapper<Omit<ArticleDetails, 'comments' | 'likes'> & { comments?: Maybe<Array<Maybe<ResolversTypes['Comment']>>>, likes?: Maybe<Array<Maybe<ResolversTypes['Like']>>> }>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Comment: ResolverTypeWrapper<Comment>;
   CreateUserResponse: ResolverTypeWrapper<CreateUserResponse>;
   DeleteArticleResponse: ResolverTypeWrapper<DeleteArticleResponse>;
   DeleteCommentResponse: ResolverTypeWrapper<DeleteCommentResponse>;
   DeleteLikeResponse: ResolverTypeWrapper<DeleteLikeResponse>;
-  GetArticleResponse: ResolverTypeWrapper<GetArticleResponse>;
-  GetArticlesResponse: ResolverTypeWrapper<GetArticlesResponse>;
+  GetArticleResponse: ResolverTypeWrapper<Omit<GetArticleResponse, 'article'> & { article?: Maybe<ResolversTypes['ArticleDetails']> }>;
+  GetArticlesResponse: ResolverTypeWrapper<Omit<GetArticlesResponse, 'articles'> & { articles?: Maybe<Array<Maybe<ResolversTypes['Article']>>> }>;
+  GetAuthorsResponse: ResolverTypeWrapper<GetAuthorsResponse>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Like: ResolverTypeWrapper<Like>;
@@ -324,26 +343,27 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   UpdateArticleProps: UpdateArticleProps;
-  UpdateArticleResponse: ResolverTypeWrapper<UpdateArticleResponse>;
+  UpdateArticleResponse: ResolverTypeWrapper<Omit<UpdateArticleResponse, 'article'> & { article?: Maybe<ResolversTypes['Article']> }>;
   User: ResolverTypeWrapper<User>;
   getUserResponse: ResolverTypeWrapper<GetUserResponse>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  AddArticleResponse: AddArticleResponse;
-  AddCommentResponse: AddCommentResponse;
-  AddLikeResponse: AddLikeResponse;
+  AddArticleResponse: Omit<AddArticleResponse, 'article'> & { article?: Maybe<ResolversParentTypes['Article']> };
+  AddCommentResponse: Omit<AddCommentResponse, 'comment'> & { comment?: Maybe<ResolversParentTypes['Comment']> };
+  AddLikeResponse: Omit<AddLikeResponse, 'like'> & { like?: Maybe<ResolversParentTypes['Like']> };
   Article: Article;
-  ArticleDetails: ArticleDetails;
+  ArticleDetails: Omit<ArticleDetails, 'comments' | 'likes'> & { comments?: Maybe<Array<Maybe<ResolversParentTypes['Comment']>>>, likes?: Maybe<Array<Maybe<ResolversParentTypes['Like']>>> };
   Boolean: Scalars['Boolean']['output'];
   Comment: Comment;
   CreateUserResponse: CreateUserResponse;
   DeleteArticleResponse: DeleteArticleResponse;
   DeleteCommentResponse: DeleteCommentResponse;
   DeleteLikeResponse: DeleteLikeResponse;
-  GetArticleResponse: GetArticleResponse;
-  GetArticlesResponse: GetArticlesResponse;
+  GetArticleResponse: Omit<GetArticleResponse, 'article'> & { article?: Maybe<ResolversParentTypes['ArticleDetails']> };
+  GetArticlesResponse: Omit<GetArticlesResponse, 'articles'> & { articles?: Maybe<Array<Maybe<ResolversParentTypes['Article']>>> };
+  GetAuthorsResponse: GetAuthorsResponse;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   Like: Like;
@@ -352,7 +372,7 @@ export type ResolversParentTypes = {
   Query: {};
   String: Scalars['String']['output'];
   UpdateArticleProps: UpdateArticleProps;
-  UpdateArticleResponse: UpdateArticleResponse;
+  UpdateArticleResponse: Omit<UpdateArticleResponse, 'article'> & { article?: Maybe<ResolversParentTypes['Article']> };
   User: User;
   getUserResponse: GetUserResponse;
 };
@@ -455,6 +475,14 @@ export type GetArticlesResponseResolvers<ContextType = DataSourceContext, Parent
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type GetAuthorsResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['GetAuthorsResponse'] = ResolversParentTypes['GetAuthorsResponse']> = {
+  authors?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type LikeResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Like'] = ResolversParentTypes['Like']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
@@ -484,7 +512,8 @@ export type MutationResolvers<ContextType = DataSourceContext, ParentType extend
 
 export type QueryResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   getArticle?: Resolver<Maybe<ResolversTypes['GetArticleResponse']>, ParentType, ContextType, RequireFields<QueryGetArticleArgs, 'id'>>;
-  getArticles?: Resolver<Maybe<ResolversTypes['GetArticlesResponse']>, ParentType, ContextType>;
+  getArticles?: Resolver<Maybe<ResolversTypes['GetArticlesResponse']>, ParentType, ContextType, Partial<QueryGetArticlesArgs>>;
+  getAuthors?: Resolver<Maybe<ResolversTypes['GetAuthorsResponse']>, ParentType, ContextType>;
   me?: Resolver<Maybe<ResolversTypes['getUserResponse']>, ParentType, ContextType>;
 };
 
@@ -523,6 +552,7 @@ export type Resolvers<ContextType = DataSourceContext> = {
   DeleteLikeResponse?: DeleteLikeResponseResolvers<ContextType>;
   GetArticleResponse?: GetArticleResponseResolvers<ContextType>;
   GetArticlesResponse?: GetArticlesResponseResolvers<ContextType>;
+  GetAuthorsResponse?: GetAuthorsResponseResolvers<ContextType>;
   Like?: LikeResolvers<ContextType>;
   LogInResponse?: LogInResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;

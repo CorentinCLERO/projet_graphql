@@ -1,6 +1,11 @@
 import { QueryResolvers } from "../../types.js";
 
-export const getArticles : QueryResolvers["getArticles"] = async(_, __, context) => {
+type orderBy = {
+  updatedAt?: 'desc',
+  createdAt?: 'desc',
+}
+
+export const getArticles : QueryResolvers["getArticles"] = async(_, {authorId, orderByLikesAsc, orderByLikesDesc}, context) => {
     if (!context.user) {
       return {
         code: 401,
@@ -9,8 +14,26 @@ export const getArticles : QueryResolvers["getArticles"] = async(_, __, context)
         article: null,
       };
     }
+
     try {
-      const articles = await context.dataSources.db.article.findMany({ include: {author: true, likes: { include: { user: true } } } });
+      const orderBy: orderBy[] = [{ updatedAt: 'desc'}, { createdAt: 'desc'}];
+      const where = authorId ? { author: { id: authorId } } : {};
+      const articles = await context.dataSources.db.article.findMany(
+        { where,
+          include: 
+            {author: true, 
+              likes: 
+              { include: 
+                { user: true }
+              } 
+          }, 
+          orderBy
+      });
+      if (orderByLikesAsc) {
+        articles.sort((a, b) => a.likes.length - b.likes.length);
+      } else if (orderByLikesDesc) {
+        articles.sort((a, b) => b.likes.length - a.likes.length);
+      }
       if (!articles) {
         return {
           code: 404,

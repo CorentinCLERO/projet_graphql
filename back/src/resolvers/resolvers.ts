@@ -11,6 +11,7 @@ import { getArticle } from "./query/getArticle.js";
 import { getArticles } from "./query/getArticles.js";
 import { addLike } from "./mutation/addLike.js";
 import { deleteLike } from "./mutation/deleteLike.js";
+import { getAuthors } from "./query/getAuthors.js";
 
 export const resolvers: Resolvers = {
   Mutation: {
@@ -27,6 +28,7 @@ export const resolvers: Resolvers = {
   Query: {
     me,
     getArticle,
-    getArticles
+    getArticles,
+    getAuthors
   },
 };
