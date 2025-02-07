@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import ArticleDetail from "./ArticleDetail";
 import { Article as ArticleType } from "../../gql/graphql";
 import { useUserContext } from "../../context/UserContext";
+import { Link } from "react-router";
 
 
 const ADD_LIKE = gql`
@@ -88,6 +89,9 @@ const Article: React.FC<{articles: ArticleType[] | null, refetch: () => void}> =
 
   return (
       <div className="feed-container">
+      <Link to="/CreatePost"> 
+        <button className="create-post-button">Create Post</button>
+      </Link>
         {articles?.map((article) => (
           <div key={article.id} className="article" onClick={() => handleArticleClick(article)}>
             <div className="article-header">
