@@ -2,6 +2,10 @@
 
 Pour démarrer le projet, suivez les étapes ci-dessous :
 
+- url du front : http://localhost:5173
+
+- url du back : http://localhost:4000
+
 1. Copier le fichier `.env.example` en `.env` dans le dossier `back` :
 ```sh
 cp back/.env.example back/.env
