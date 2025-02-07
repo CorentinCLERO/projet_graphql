@@ -49,6 +49,15 @@ Ce projet consiste à développer un réseau social permettant aux utilisateurs 
 - SqlLite
 - Yarn ou npm
 
+### URLs
+
+- Backend : http://localhost:4000
+- Frontend : http://localhost:5173
+
+### utilisateur
+
+- nom d'utilisateur: john
+- mot de passe: john
 ### Configuration de l'Environnement
 Copiez le fichier `.env.example` en `.env` dans le dossier `back` :
 ```bash
