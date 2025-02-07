@@ -65,6 +65,44 @@ const DELETE_COMMENT = gql`
   }
 `;
 
+const UPDATE_ARTICLE = gql`
+  mutation UpdateArticle($updateArticleId: ID!, $data: UpdateArticleProps!) {
+    updateArticle(id: $updateArticleId, data: $data) {
+      code
+      success
+      message
+      article {
+        id
+        title
+        content
+        author {
+          id
+          username
+        }
+        createdAt
+        updatedAt
+        likes {
+          id
+          user {
+            id
+            username
+          }
+        }
+      }
+    }
+  }
+`;
+
+const DELETE_ARTICLE = gql`
+  mutation DeleteArticle($deleteArticleId: ID!) {
+    deleteArticle(id: $deleteArticleId) {
+      code
+      success
+      message
+    }
+  }
+`;
+
 const ArticleDetail: React.FC<{
   articleId: string;
   onClose: () => void;
@@ -72,7 +110,9 @@ const ArticleDetail: React.FC<{
 }> = ({ articleId, onClose, handleLike }) => {
   const [newComment, setNewComment] = useState<string>("");
   const { user } = useUserContext();
-  const { data, refetch } = useQuery<GetArticleQuery>(GET_ARTICLE, {
+  const [article, setArticle] = useState<ArticleType | null>(null);
+  const [isModify, setIsModify] = useState<boolean>(false);
+  const { data } = useQuery<GetArticleQuery>(GET_ARTICLE, {
     variables: { id: articleId },
     skip: !user.token,
     context: {
@@ -83,6 +123,7 @@ const ArticleDetail: React.FC<{
   });
 
   const [mutateFunction] = useMutation(ADD_COMMENT, {
+    refetchQueries: ["GetArticle"],
     context: {
       headers: {
         authorization: user.token ? user.token : "",
@@ -91,6 +132,25 @@ const ArticleDetail: React.FC<{
   });
 
   const [removeComment] = useMutation(DELETE_COMMENT, {
+    refetchQueries: ["GetArticles", "GetArticle"],
+    context: {
+      headers: {
+        authorization: user.token ? user.token : "",
+      },
+    },
+  });
+  
+  const [updateComment] = useMutation(UPDATE_ARTICLE, {
+    refetchQueries: ["GetArticles", "GetArticle"],
+    context: {
+      headers: {
+        authorization: user.token ? user.token : "",
+      },
+    },
+  });
+  
+  const [removeArticle] = useMutation(DELETE_ARTICLE, {
+    refetchQueries: ["GetArticles"],
     context: {
       headers: {
         authorization: user.token ? user.token : "",
@@ -98,7 +158,6 @@ const ArticleDetail: React.FC<{
     },
   });
 
-  const [article, setArticle] = useState<ArticleType | null>(null);
 
   useEffect(() => {
     if (data && data.getArticle && data.getArticle.article) {
@@ -115,13 +174,11 @@ const ArticleDetail: React.FC<{
       },
     });
     setNewComment("");
-    await refetch();
   };
 
   const handleLikeArticle = async (e: React.MouseEvent, articleId: string) => {
     e.stopPropagation();
     await handleLike(e, articleId);
-    await refetch();
   };
 
   const handleDeleteComment = async (
@@ -134,8 +191,40 @@ const ArticleDetail: React.FC<{
         deleteCommentId: commentId,
       },
     });
-    await refetch();
   };
+
+  const handleUpdateArticle = async (
+    e: React.MouseEvent
+  ) => {
+    e.stopPropagation();
+    if (!isModify) {
+      setIsModify(true);
+      return;
+    } else {
+      await updateComment({
+        variables: {
+          updateArticleId: articleId,
+          data: {
+            title: article?.title,
+            content: article?.content,
+          },
+        },
+      });
+      setIsModify(false);
+    }
+  };
+
+  const handleDeleteArticle = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    await removeArticle({
+      variables: {
+        deleteArticleId: articleId,
+      },
+    });
+    onClose();
+  };
+
+  console.log(article);
 
   return (
     <div className="article-modal">
@@ -145,8 +234,8 @@ const ArticleDetail: React.FC<{
         </span>
         <div className="modal-details">
           <span className="username">{article?.author.username}</span>
-          <h1>{article?.title}</h1>
-          <p className="article-content">{article?.content}</p>
+          {isModify ? <input value={article?.title} onChange={e => setArticle(prev => prev ? { ...prev, title: e.target.value } : null)} /> : <h1>{article?.title}</h1>}
+          {isModify ? <textarea value={article?.content} onChange={e => setArticle(prev => prev ? { ...prev, content: e.target.value } : null)} /> : <p className="article-content">{article?.content}</p>}
           <span style={{ display: "flex", justifyContent: "space-between", gap: "20px" }}>
             <button
               className="like-button"
@@ -156,8 +245,8 @@ const ArticleDetail: React.FC<{
             </button>
             {article?.author?.id === user.id && (
               <>
-                <button className="like-button">✏️</button>
-                <button className="like-button">🗑️</button>
+                <button className="like-button" onClick={e => handleUpdateArticle(e)}>{isModify ? "✅" : "✏️"}</button>
+                <button className="like-button" onClick={e => handleDeleteArticle(e)}>🗑️</button>
               </>
             )}
           </span>

@@ -25,7 +25,7 @@ model Article {
   title     String
   content   String
   authorId  String
-  author    User      @relation("UserArticles", fields: [authorId], references: [id])
+  author    User      @relation("UserArticles", fields: [authorId], references: [id], onDelete: Cascade)
   comments  Comment[] @relation("ArticleComments")
   likes     Like[]    @relation("ArticleLikes")
   createdAt DateTime  @default(now())
@@ -37,8 +37,8 @@ model Comment {
   content   String
   authorId  String
   articleId String
-  author    User     @relation("UserComments", fields: [authorId], references: [id])
-  article   Article  @relation("ArticleComments", fields: [articleId], references: [id])
+  author    User     @relation("UserComments", fields: [authorId], references: [id], onDelete: Cascade)
+  article   Article  @relation("ArticleComments", fields: [articleId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
 
@@ -46,7 +46,7 @@ model Like {
   id        String   @id @default(uuid())
   userId    String
   articleId String
-  user      User     @relation("UserLikes", fields: [userId], references: [id])
-  article   Article  @relation("ArticleLikes", fields: [articleId], references: [id])
+  user      User     @relation("UserLikes", fields: [userId], references: [id], onDelete: Cascade)
+  article   Article  @relation("ArticleLikes", fields: [articleId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
