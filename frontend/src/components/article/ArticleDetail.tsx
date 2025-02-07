@@ -139,7 +139,7 @@ const ArticleDetail: React.FC<{
       },
     },
   });
-  
+
   const [updateComment] = useMutation(UPDATE_ARTICLE, {
     refetchQueries: ["GetArticles", "GetArticle"],
     context: {
@@ -148,7 +148,7 @@ const ArticleDetail: React.FC<{
       },
     },
   });
-  
+
   const [removeArticle] = useMutation(DELETE_ARTICLE, {
     refetchQueries: ["GetArticles"],
     context: {
@@ -157,7 +157,6 @@ const ArticleDetail: React.FC<{
       },
     },
   });
-
 
   useEffect(() => {
     if (data && data.getArticle && data.getArticle.article) {
@@ -193,9 +192,7 @@ const ArticleDetail: React.FC<{
     });
   };
 
-  const handleUpdateArticle = async (
-    e: React.MouseEvent
-  ) => {
+  const handleUpdateArticle = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!isModify) {
       setIsModify(true);
@@ -234,9 +231,39 @@ const ArticleDetail: React.FC<{
         </span>
         <div className="modal-details">
           <span className="username">{article?.author.username}</span>
-          {isModify ? <input style={{ marginBottom: "20px", borderRadius: "10px" }} value={article?.title} onChange={e => setArticle(prev => prev ? { ...prev, title: e.target.value } : null)} /> : <h1>{article?.title}</h1>}
-          {isModify ? <textarea style={{ marginBottom: "20px", borderRadius: "10px" }} value={article?.content} onChange={e => setArticle(prev => prev ? { ...prev, content: e.target.value } : null)} /> : <p className="article-content">{article?.content}</p>}
-          <span style={{ display: "flex", justifyContent: "space-between", gap: "20px" }}>
+          {isModify ? (
+            <input
+              className="input-article-style"
+              value={article?.title}
+              onChange={(e) =>
+                setArticle((prev) =>
+                  prev ? { ...prev, title: e.target.value } : null
+                )
+              }
+            />
+          ) : (
+            <h1>{article?.title}</h1>
+          )}
+          {isModify ? (
+            <textarea
+              className="textarea-article-style"
+              value={article?.content}
+              onChange={(e) =>
+                setArticle((prev) =>
+                  prev ? { ...prev, content: e.target.value } : null
+                )
+              }
+            />
+          ) : (
+            <p className="article-content">{article?.content}</p>
+          )}
+          <span
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: "20px",
+            }}
+          >
             <button
               className="like-button"
               onClick={(e) => handleLikeArticle(e, article?.id || "")}
@@ -245,8 +272,18 @@ const ArticleDetail: React.FC<{
             </button>
             {article?.author?.id === user.id && (
               <>
-                <button className="like-button" onClick={e => handleUpdateArticle(e)}>{isModify ? "✅" : "✏️"}</button>
-                <button className="like-button" onClick={e => handleDeleteArticle(e)}>🗑️</button>
+                <button
+                  className="like-button"
+                  onClick={(e) => handleUpdateArticle(e)}
+                >
+                  {isModify ? "✅" : "✏️"}
+                </button>
+                <button
+                  className="like-button"
+                  onClick={(e) => handleDeleteArticle(e)}
+                >
+                  🗑️
+                </button>
               </>
             )}
           </span>
