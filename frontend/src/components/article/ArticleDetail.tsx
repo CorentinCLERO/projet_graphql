@@ -234,8 +234,8 @@ const ArticleDetail: React.FC<{
         </span>
         <div className="modal-details">
           <span className="username">{article?.author.username}</span>
-          {isModify ? <input value={article?.title} onChange={e => setArticle(prev => prev ? { ...prev, title: e.target.value } : null)} /> : <h1>{article?.title}</h1>}
-          {isModify ? <textarea value={article?.content} onChange={e => setArticle(prev => prev ? { ...prev, content: e.target.value } : null)} /> : <p className="article-content">{article?.content}</p>}
+          {isModify ? <input style={{ marginBottom: "20px", borderRadius: "10px" }} value={article?.title} onChange={e => setArticle(prev => prev ? { ...prev, title: e.target.value } : null)} /> : <h1>{article?.title}</h1>}
+          {isModify ? <textarea style={{ marginBottom: "20px", borderRadius: "10px" }} value={article?.content} onChange={e => setArticle(prev => prev ? { ...prev, content: e.target.value } : null)} /> : <p className="article-content">{article?.content}</p>}
           <span style={{ display: "flex", justifyContent: "space-between", gap: "20px" }}>
             <button
               className="like-button"
