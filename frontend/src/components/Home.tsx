@@ -5,6 +5,7 @@ import { gql, useQuery } from "@apollo/client";
 import { useUserContext } from "../context/UserContext";
 import { Article as ArticleType, GetArticlesQuery, GetAuthorsQuery, User } from "../gql/graphql";
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 
 const GET_ARTICLES = gql`
   query GetArticles($authorId: String, $orderByLikesAsc: Boolean, $orderByLikesDesc: Boolean) {
@@ -85,27 +86,41 @@ const Home: React.FC = () => {
   }, [authorsData]);
 
   return (
-    <>
-      <div>
-        <select onChange={(e) => setAuthorId(e.target.value)}>
-          <option value="">Tout les auteurs</option>
-          {authors && authors.map(author => {
-            return <option key={author.id} value={author.id}>{author.username}</option>
-          })}
-        </select>
-        <button onClick={() => { 
-          setOrderByLikesAsc(true); 
-          setOrderByLikesDesc(false); 
-          refetch(); 
-          }}>trier par like Asc</button>
-        <button onClick={() => { 
-          setOrderByLikesAsc(false); 
-          setOrderByLikesDesc(true); 
-          refetch(); 
-          }}>trier par like Desc</button>
-      </div>
-      <Article articles={articles} />
-    </>
+  <>
+    <div className="menu-container">
+      <select onChange={(e) => setAuthorId(e.target.value)}>
+        <option value="">Tous les auteurs</option>
+        {authors && authors.map(author => (
+          <option key={author.id} value={author.id}>{author.username}</option>
+        ))}
+      </select>
+      
+      <button onClick={() => { 
+        setOrderByLikesAsc(true); 
+        setOrderByLikesDesc(false); 
+        refetch(); 
+      }}>
+        Trier par Like ↑
+      </button>
+      
+      <button onClick={() => { 
+        setOrderByLikesAsc(false); 
+        setOrderByLikesDesc(true); 
+        refetch(); 
+      }}>
+        Trier par Like ↓
+      </button>
+      
+      <Link to="/CreatePost"> 
+        <button className="create-post-button">Créer un Post</button>
+      </Link>
+      <button className="create-post-button" onClick={() => {localStorage.removeItem('token'); window.location.reload();}}>
+        se déconnecter
+      </button>
+    </div>
+
+    <Article articles={articles} />
+  </>
   );
 }
 
