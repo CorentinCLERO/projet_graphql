@@ -1,7 +1,7 @@
 # Projet : Réseau Social GraphQL
 
 ## Description
-Ce projet consiste à développer un réseau social permettant aux utilisateurs de s'inscrire, publier des articles, commenter les publications d'autres utilisateurs et "liker" des articles. Il est divisé en deux parties : le backend en Apollo Server avec Prisma et le frontend en utilisant un framework moderne (React, Vue ou Svelte).
+Ce projet consiste à développer un réseau social permettant aux utilisateurs de s'inscrire, publier des articles, commenter les publications d'autres utilisateurs et "liker" des articles. Il est divisé en deux parties : le backend en Apollo Server avec Prisma et le frontend en utilisant un framework moderne (React).
 
 ---
 
@@ -26,9 +26,10 @@ Ce projet consiste à développer un réseau social permettant aux utilisateurs 
 ### Authentification
 - Inscription et connexion des utilisateurs
 - Gestion des sessions utilisateur avec JWT
+- Possibilite de deconnecter 
 
 ### Gestion des Articles
-- Création, lecture, mise à jour et suppression d'articles
+- Création, lecture, modifier et suppression d'articles
 - Affichage des articles avec l'auteur, le contenu, les commentaires et les likes
 
 ### Interaction avec les Articles
